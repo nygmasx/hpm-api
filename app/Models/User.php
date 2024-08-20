@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -21,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'enterprise',
+        'address',
+        'phone',
     ];
 
     /**
@@ -46,8 +50,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function products()
+    public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function tracabilities(): HasMany
+    {
+        return $this->hasMany(Tracability::class);
     }
 }

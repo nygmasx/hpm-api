@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+class Tracability extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'simple_product_name',
+        'opened_at',
+        'service',
+        'simple_label_picture'
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function product(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_tracability', 'tracability_id', 'product_id')
+            ->withPivot('id', 'quantity', 'label_picture', 'expiration_date')->withTimestamps();
+
+    }
+}
