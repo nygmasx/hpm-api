@@ -6,9 +6,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Tracability>
  */
-class ProductFactory extends Factory
+class TracabilityFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,9 +19,6 @@ class ProductFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'name' => 'Produit' . $this->faker->numberBetween(1, 30),
-            'code' => 'KZNX8209',
-            'created_at' => now(),
         ];
     }
 }
