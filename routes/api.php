@@ -44,17 +44,16 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
     return response()->json("Logged out", 200);
 });
 
-Route::post('/simple-tracking', function (Request $request) {
+Route::middleware('auth:sanctum')->post('/simple-tracking', function (Request $request) {
     request()->validate([
-        'simple_product_name' => 'required',
         'opened_at' => 'required',
-        'simple_label_picture' => 'required',
+        'simple_label_pictures' => 'required',
     ]);
 
     return \App\Models\Tracability::create([
-        'user_id' => 1,
-        'simple_product_name' => $request->simple_product_name,
+        'user_id' => auth()->id(),
         'opened_at' => $request->opened_at,
         'simple_label_picture' => $request->simple_label_picture,
     ]);
 });
+
