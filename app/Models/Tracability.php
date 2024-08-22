@@ -31,8 +31,8 @@ class Tracability extends Model
             ->withPivot('id', 'quantity', 'label_picture', 'expiration_date')->withTimestamps();
     }
 
-    public function images(): HasMany {
-        return $this->hasMany(Image::class);
+    public function images(): BelongsToMany {
+        return $this->belongsToMany(Image::class);
     }
 
 }
