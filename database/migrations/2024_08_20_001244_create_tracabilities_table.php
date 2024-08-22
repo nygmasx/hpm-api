@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Product;
+use App\Models\Tracability;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +15,11 @@ return new class extends Migration
     {
         Schema::create('tracabilities', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('simple_product_name')->nullable();
+            $table->dateTime('opened_at')->nullable();
+            $table->string('service')->nullable();
+            $table->string('simple_label_picture')->nullable();
             $table->timestamps();
 
         });

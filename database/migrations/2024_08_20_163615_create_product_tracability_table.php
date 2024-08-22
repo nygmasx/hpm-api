@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('product_tracability', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\Product::class);
+            $table->foreignIdFor(\App\Models\Tracability::class);
+            $table->date('expiration_date');
+            $table->string('quantity');
+            $table->string('label_picture');
             $table->timestamps();
         });
     }

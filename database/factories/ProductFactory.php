@@ -20,6 +20,7 @@ class ProductFactory extends Factory
         return [
             'user_id' => User::factory(),
             'name' => 'Produit' . $this->faker->numberBetween(1, 30),
+            'code' => 'KZNX8209',
             'created_at' => now(),
         ];
     }

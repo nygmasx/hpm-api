@@ -13,11 +13,14 @@ class Tracability extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'simple_product_name',
         'opened_at',
         'service',
         'simple_label_picture'
     ];
+
+    protected $guarded = [];
 
     public function user(): BelongsTo
     {
