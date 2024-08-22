@@ -2,14 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Image;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Tracability>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Image>
  */
-class TracabilityFactory extends Factory
+class ImageFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,8 +17,7 @@ class TracabilityFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-            'image_id' => Image::factory(),
+            'url' => 'https://apimobile.testingtest.com/storage/simple-tracking/image' . $this->faker->numberBetween(1, 30) . '.jpg',
         ];
     }
 }

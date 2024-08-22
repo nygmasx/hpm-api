@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Image;
 use App\Models\Product;
 use App\Models\ProductTracability;
 use App\Models\Tracability;
@@ -25,11 +26,8 @@ class DatabaseSeeder extends Seeder
             "email" => "admin@admin.com",
             "name" => "Admin",
         ]);
-
         Product::factory(15)->create();
-
+        Image::factory(5)->create();
         Tracability::factory(5)->create();
-
-        ProductTracability::fa
     }
 }
