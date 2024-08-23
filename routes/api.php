@@ -3,6 +3,7 @@
 use App\Models\Product;
 use App\Models\Tracability;
 use App\Models\User;
+use Faker\Provider\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -46,34 +47,34 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->post('/simple-tracking', function (Request $request) {
-    request()->validate([
-        'opened_at' => 'required',
-        'simple_label_pictures.*' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+    $request->validate([
+        'opened_at' => 'required|date',
+        'simple_label_pictures.*' => 'required|image|mimes:jpg,jpeg,png',
     ]);
 
+    // Create the Tracability record
     $tracability = Tracability::create([
         'user_id' => auth()->id(),
         'opened_at' => $request->opened_at,
     ]);
 
+    $imageIds = [];
     if ($request->hasFile('simple_label_pictures')) {
-        $imageIds = [];
         foreach ($request->file('simple_label_pictures') as $file) {
-            $path = $file->store('label_pictures', 'public');
+            $url = $file->store('label_pictures', 'public');
 
             // Create Image record
-            $image = \App\Models\Image::create([
-                'path' => $path,
-            ]);
+            $image = Image::create(['url' => $url]);
 
             $imageIds[] = $image->id;
         }
+    }
 
-        // Attach images to tracability using the pivot table
+    // Attach images to Tracability
+    if ($imageIds) {
         $tracability->images()->attach($imageIds);
     }
 
     return response()->json(['message' => 'Tracability created successfully.']);
-
 });
 

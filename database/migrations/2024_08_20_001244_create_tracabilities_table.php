@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->dateTime('opened_at')->nullable();
             $table->string('service')->nullable();
-            $table->foreignId('image_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
 
         });
