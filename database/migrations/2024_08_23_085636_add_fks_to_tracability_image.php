@@ -24,7 +24,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('tracability_image', function (Blueprint $table) {
+        Schema::table('image_tracability', function (Blueprint $table) {
             //
         });
     }
