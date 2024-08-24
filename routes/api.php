@@ -13,8 +13,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware(['auth:sanctum'])->get('user/{user}/products', function (User $user) {
-
+Route::get('user/{user}/products', function (User $user) {
     return $user->products;
 });
 
