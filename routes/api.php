@@ -78,3 +78,17 @@ Route::middleware('auth:sanctum')->post('/simple-tracking', function (Request $r
     return response()->json(['message' => 'Tracability created successfully.']);
 });
 
+Route::middleware('auth:sanctum')->post('/product/new', function (Request $request) {
+
+    $request->validate([
+        'name' => 'required',
+    ]);
+
+    Product::create([
+        'user_id' => auth()->id(),
+        'name' => $request->name,
+    ]);
+
+    return response()->json(['message' => 'Product created successfully.']);
+
+});
