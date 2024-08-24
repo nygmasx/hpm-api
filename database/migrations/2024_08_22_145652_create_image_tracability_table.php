@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('image_tracability', function (Blueprint $table) {
-            $table->id();
             $table->unsignedBigInteger('image_id');
             $table->unsignedBigInteger('tracability_id');
             $table->timestamps();
