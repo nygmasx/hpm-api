@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         DB::table('tracabilities')->delete();
-        DB::table('users')->truncate();
+        DB::table('users')->delete();
 
         User::factory()->create([
             "email" => "admin@admin.com",
