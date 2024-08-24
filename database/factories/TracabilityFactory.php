@@ -20,7 +20,6 @@ class TracabilityFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'image_id' => Image::factory(),
         ];
     }
 }

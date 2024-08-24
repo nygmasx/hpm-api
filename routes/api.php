@@ -13,8 +13,9 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/products', function () {
-    return Product::with('user:id,name,email')->latest()->get();
+Route::middleware(['auth:sanctum'])->get('user/{user}/products', function (User $user) {
+
+    return $user->products;
 });
 
 Route::post('/login', function (Request $request) {

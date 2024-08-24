@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('tracability_image', function (Blueprint $table) {
+        Schema::table('image_tracability', function (Blueprint $table) {
             //
             $table->foreign('tracability_id')->references('id')->on('tracabilities')->onDelete('cascade');
             $table->foreign('image_id')->references('id')->on('images')->onDelete('cascade');
