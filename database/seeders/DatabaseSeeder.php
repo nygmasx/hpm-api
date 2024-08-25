@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Equipment;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\ProductTracability;
@@ -29,5 +30,6 @@ class DatabaseSeeder extends Seeder
         Product::factory(15)->create();
         Image::factory(5)->create();
         Tracability::factory(5)->create();
+        Equipment::factory(10)->create();
     }
 }

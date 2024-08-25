@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,9 @@ class EquipmentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => 'Equipement ' . $this->faker->numberBetween(1, 10),
+            'type' => $this->faker->randomElement(['Congélateur', 'Frigo', 'Chaud']),
+            'user_id' => User::factory(),
         ];
     }
 }

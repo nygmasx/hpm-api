@@ -59,4 +59,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Tracability::class);
     }
+
+    public function equipments(): HasMany
+    {
+        return $this->hasMany(Equipment::class);
+    }
+
+    public function temperatures(): HasMany
+    {
+        return $this->hasMany(Temperature::class);
+    }
 }

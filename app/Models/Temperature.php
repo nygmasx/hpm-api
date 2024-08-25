@@ -12,8 +12,15 @@ class Temperature extends Model
     use HasFactory;
 
     protected $fillable = [
-        'reading_date'
+        'reading_date',
+        'user_id'
     ];
+
+
+    public function users(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function equipments(): BelongsToMany
     {
