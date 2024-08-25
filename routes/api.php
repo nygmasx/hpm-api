@@ -92,3 +92,26 @@ Route::middleware('auth:sanctum')->post('/product/new', function (Request $reque
     return response()->json(['message' => 'Product created successfully.']);
 
 });
+
+
+
+Route::middleware('auth:sanctum')->post('/equipment/new', function (Request $request) {
+
+    $request->validate([
+        'name' => 'required',
+        'type' => 'required',
+    ]);
+
+    Product::create([
+        'user_id' => auth()->id(),
+        'name' => $request->name,
+        'type' => $request->type,
+    ]);
+
+    return response()->json(['message' => 'Equipment created successfully.']);
+
+});
+
+Route::get('user/{user}/equipments', function (User $user) {
+    return $user->equipments;
+});
