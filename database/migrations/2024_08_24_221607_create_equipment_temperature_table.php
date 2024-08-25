@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('equipment_temperature', function (Blueprint $table) {
             $table->unsignedBigInteger('equipment_id');
             $table->unsignedBigInteger('temperature_id');
+            $table->string('degree');
             $table->timestamps();
 
+            $table->index(['equipment_id', 'temperature_id']);
             $table->primary(['equipment_id', 'temperature_id']);
-            $table->foreign('equipment_id')->references('id')->on('equipment');
-            $table->foreign('temperature_id')->references('id')->on('temperature');
+            $table->foreign('equipment_id')->references('id')->on('equipment')->cascadeOnDelete();
+            $table->foreign('temperature_id')->references('id')->on('temperatures')->cascadeOnDelete();
         });
     }
 
