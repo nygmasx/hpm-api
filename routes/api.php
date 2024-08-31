@@ -1,9 +1,9 @@
 <?php
 
+use App\Models\Image;
 use App\Models\Product;
 use App\Models\Tracability;
 use App\Models\User;
-use Faker\Provider\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
