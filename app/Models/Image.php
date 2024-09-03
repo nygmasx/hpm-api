@@ -17,4 +17,8 @@ class Image extends Model
     {
         return $this->belongsToMany(Tracability::class, 'image_tracability');
     }
+    public function advancedTracabilities(): BelongsToMany
+    {
+        return $this->belongsToMany(AdvancedTracability::class, 'advanced_tracability_image');
+    }
 }

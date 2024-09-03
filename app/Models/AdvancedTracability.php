@@ -25,4 +25,8 @@ class AdvancedTracability extends Model
     {
         return $this->belongsToMany(Product::class, 'product_advanced_tracability');
     }
+
+    public function images(): BelongsToMany {
+        return $this->belongsToMany(Image::class, 'advanced_tracability_image');
+    }
 }
