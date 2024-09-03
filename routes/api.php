@@ -94,7 +94,6 @@ Route::middleware('auth:sanctum')->post('/product/new', function (Request $reque
 });
 
 
-
 Route::middleware('auth:sanctum')->post('/equipment/new', function (Request $request) {
 
     $request->validate([
