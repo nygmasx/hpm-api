@@ -7,23 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Product extends Model
+class AdvancedTracability extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'name',
-        'code'
+        'opened_at',
+        'service'
     ];
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
+    public function user(): BelongsTo{
         return $this->belongsTo(User::class);
     }
 
-    public function advancedTracabilities(): BelongsToMany
+    public function product(): BelongsToMany
     {
-        return $this->belongsToMany(AdvancedTracability::class, 'product_advanced_tracability');
+        return $this->belongsToMany(Product::class, 'product_advanced_tracability');
     }
 }

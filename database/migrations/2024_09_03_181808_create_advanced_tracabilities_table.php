@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_tracability', function (Blueprint $table) {
+        Schema::create('advanced_tracabilities', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Product::class);
-            $table->foreignIdFor(\App\Models\Tracability::class);
-            $table->date('expiration_date');
-            $table->string('quantity');
-            $table->string('label_picture');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->datetime('opened_at');
+            $table->string('service');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_tracability');
+        Schema::dropIfExists('advanced_tracabilities');
     }
 };
