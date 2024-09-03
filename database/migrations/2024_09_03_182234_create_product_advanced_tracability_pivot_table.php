@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('label_picture');
             $table->timestamps();
 
-            $table->index(['advanced_tracability_id', 'product_id']);
+            $table->index(['advanced_tracability_id', 'product_id'], 'adv_trac_prod_idx');
             $table->primary(['advanced_tracability_id', 'product_id']);
         });
     }
