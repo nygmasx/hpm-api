@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('product_advanced_tracability', function (Blueprint $table) {
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('advanced_tracability_id');
-            $table->foreign('advanced_tracability_id')->references('id')->on('advanced_tracailities')->onDelete('cascade');
+            $table->foreign('advanced_tracability_id')->references('id')->on('advanced_tracabilities')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->date('expiration_date');
             $table->string('quantity');
