@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign('image_id')->references('id')->on('images')->onDelete('cascade');
             $table->timestamps();
 
-            $table->index(['advanced_tracability_id', 'image_id']);
+            $table->index(['advanced_tracability_id', 'image_id'], 'adv_trac_img_idx');
             $table->primary(['advanced_tracability_id', 'image_id']);
 
         });
