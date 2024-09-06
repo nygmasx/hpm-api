@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AdvancedTracability;
+use App\Models\Equipment;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\Tracability;
@@ -94,28 +95,6 @@ Route::middleware('auth:sanctum')->post('/product/new', function (Request $reque
 
 });
 
-
-Route::middleware('auth:sanctum')->post('/equipment/new', function (Request $request) {
-
-    $request->validate([
-        'name' => 'required',
-        'type' => 'required',
-    ]);
-
-    Product::create([
-        'user_id' => auth()->id(),
-        'name' => $request->name,
-        'type' => $request->type,
-    ]);
-
-    return response()->json(['message' => 'Equipment created successfully.']);
-
-});
-
-Route::get('user/{user}/equipments', function (User $user) {
-    return $user->equipments;
-});
-
 Route::middleware('auth:sanctum')->post('/advanced-tracability/new', function (Request $request) {
     // Validate the incoming request data
     $request->validate([
@@ -149,8 +128,12 @@ Route::middleware('auth:sanctum')->post('/advanced-tracability/new', function (R
             }
         }
 
+        if (!empty($imageIds)) {
+            $advancedTracability->images()->attach($imageIds);
+        }
+
         // Attach product and image(s) to the advanced tracability
-        $advancedTracability->products()->attach($product->id, [
+        $advancedTracability->product()->attach($product->id, [
             'expiration_date' => $productData['expiration_date'],
             'quantity' => $productData['quantity'],
             'label_picture' => $imageIds[0] ?? null, // Assuming one label picture per product, adjust as needed
@@ -158,4 +141,26 @@ Route::middleware('auth:sanctum')->post('/advanced-tracability/new', function (R
     }
 
     return response()->json(['message' => 'Advanced Tracability created successfully.']);
+});
+
+
+Route::middleware('auth:sanctum')->post('/equipment/new', function (Request $request) {
+
+    $request->validate([
+        'name' => 'required',
+        'type' => 'required',
+    ]);
+
+    Equipment::create([
+        'user_id' => auth()->id(),
+        'name' => $request->name,
+        'type' => $request->type,
+    ]);
+
+    return response()->json(['message' => 'Equipment created successfully.']);
+
+});
+
+Route::get('user/{user}/equipments', function (User $user) {
+    return $user->equipments;
 });

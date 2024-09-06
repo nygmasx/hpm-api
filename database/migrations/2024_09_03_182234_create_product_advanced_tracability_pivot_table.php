@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('advanced_tracability_id');
             $table->foreign('advanced_tracability_id')->references('id')->on('advanced_tracabilities')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->date('expiration_date');
+            $table->dateTime('expiration_date');
             $table->string('quantity');
             $table->string('label_picture');
             $table->timestamps();
