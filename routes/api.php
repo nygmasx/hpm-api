@@ -4,6 +4,7 @@ use App\Models\AdvancedTracability;
 use App\Models\Equipment;
 use App\Models\Image;
 use App\Models\Product;
+use App\Models\Temperature;
 use App\Models\Tracability;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -163,4 +164,28 @@ Route::middleware('auth:sanctum')->post('/equipment/new', function (Request $req
 
 Route::get('user/{user}/equipments', function (User $user) {
     return $user->equipments;
+});
+
+Route::middleware('auth:sanctum')->post('/temperature/new', function (Request $request) {
+
+    $request->validate([
+        'reading_date' => 'required|date',
+        'equipments' => 'required|array',
+        'equipments.*.equipment_id' => 'required|exists:equipments,id',
+        'equipments.*.degrees' => 'required|string',
+    ]);
+
+    $temperature = Temperature::create([
+        'user_id' => auth()->id(),
+        'reading_date' => $request->reading_date,
+    ]);
+
+    foreach ($request->equipments as $equipmentData) {
+        $equipment = Equipment::find($equipmentData['equipment_id']);
+        $temperature->equipments()->attach($equipment->id, [
+            'degree' => $equipmentData['degree'],
+        ]);
+    }
+
+    return response()->json(['message' => 'Temperature statement created successfully.']);
 });
