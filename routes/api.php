@@ -134,7 +134,7 @@ Route::middleware('auth:sanctum')->post('/advanced-tracability/new', function (R
         }
 
         // Attach product and image(s) to the advanced tracability
-        $advancedTracability->product()->attach($product->id, [
+        $advancedTracability->products()->attach($product->id, [
             'expiration_date' => $productData['expiration_date'],
             'quantity' => $productData['quantity'],
             'label_picture' => $imageIds[0] ?? null, // Assuming one label picture per product, adjust as needed
