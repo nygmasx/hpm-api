@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\CleaningStation;
+use App\Models\CleaningZone;
 use App\Models\Equipment;
 use App\Models\Image;
 use App\Models\Product;
@@ -31,5 +33,7 @@ class DatabaseSeeder extends Seeder
         Image::factory(5)->create();
         Tracability::factory(5)->create();
         Equipment::factory(10)->create();
+        CleaningZone::factory(10)->create();
+        CleaningStation::factory(10)->create();
     }
 }

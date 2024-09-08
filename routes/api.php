@@ -191,7 +191,8 @@ Route::middleware('auth:sanctum')->post('/temperature/new', function (Request $r
 });
 
 Route::get('user/{user}/simple-tracability', function (User $user) {
-    return $user->tracabilities;
+    $tracabilities = $user->tracabilities()->with('images')->get();
+    return response()->json($tracabilities);
 });
 
 Route::get('user/{user}/advanced-tracability', function (User $user) {
@@ -199,5 +200,8 @@ Route::get('user/{user}/advanced-tracability', function (User $user) {
 });
 
 Route::get('user/{user}/temperatures', function (User $user) {
-    return $user->temperatures;
+    $temperatures = $user->temperatures()->with(['equipments' => function ($query) {
+        $query->withPivot('degree');
+    }])->get();
+    return response()->json($temperatures);
 });
