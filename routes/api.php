@@ -171,7 +171,7 @@ Route::middleware('auth:sanctum')->post('/temperature/new', function (Request $r
     $request->validate([
         'reading_date' => 'required|date',
         'equipments' => 'required|array',
-        'equipments.*.equipment_id' => 'required|exists:equipments,id',
+        'equipments.*.equipment_id' => 'required|exists:equipment,id',
         'equipments.*.degrees' => 'required|string',
     ]);
 
@@ -183,9 +183,21 @@ Route::middleware('auth:sanctum')->post('/temperature/new', function (Request $r
     foreach ($request->equipments as $equipmentData) {
         $equipment = Equipment::find($equipmentData['equipment_id']);
         $temperature->equipments()->attach($equipment->id, [
-            'degree' => $equipmentData['degree'],
+            'degree' => $equipmentData['degrees'],
         ]);
     }
 
     return response()->json(['message' => 'Temperature statement created successfully.']);
+});
+
+Route::get('user/{user}/simple-tracability', function (User $user) {
+    return $user->tracabilities;
+});
+
+Route::get('user/{user}/advanced-tracability', function (User $user) {
+    return $user->tracabilities;
+});
+
+Route::get('user/{user}/temperatures', function (User $user) {
+    return $user->temperatures;
 });

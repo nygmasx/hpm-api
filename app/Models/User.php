@@ -60,6 +60,11 @@ class User extends Authenticatable
         return $this->hasMany(Tracability::class);
     }
 
+    public function advancedTracabilities(): HasMany
+    {
+        return $this->hasMany(AdvancedTracability::class);
+    }
+
     public function equipments(): HasMany
     {
         return $this->hasMany(Equipment::class);
