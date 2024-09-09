@@ -205,3 +205,7 @@ Route::get('user/{user}/temperatures', function (User $user) {
     }])->get();
     return response()->json($temperatures);
 });
+
+Route::get('user/{user}/cleaning-zones', function (User $user) {
+    return $user->cleaningZones;
+});
