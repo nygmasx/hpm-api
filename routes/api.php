@@ -223,3 +223,7 @@ Route::middleware('auth:sanctum')->post('/cleaning-zone/new', function (Request 
 
     return response()->json(['message' => 'Cleaning Zone created successfully.']);
 });
+
+Route::get('user/{cleaningZone}/cleaning-station', function (CleaningZone $cleaningZone) {
+    return $cleaningZone->cleaningStations;
+});
