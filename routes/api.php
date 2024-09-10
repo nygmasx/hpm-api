@@ -229,7 +229,7 @@ Route::get('cleaning-zone/{cleaningZone}/cleaning-station', function (CleaningZo
     return $cleaningZone->cleaningStations;
 });
 
-Route::middleware('auth:sanctum')->post('/cleaning-station/new', function (Request $request) {
+Route::post('/cleaning-station/new', function (Request $request) {
     $request->validate([
         'name' => 'required',
         'cleaning_zone_id' => 'required'
