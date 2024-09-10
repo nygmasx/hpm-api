@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AdvancedTracability;
+use App\Models\CleaningZone;
 use App\Models\Equipment;
 use App\Models\Image;
 use App\Models\Product;
@@ -208,4 +209,17 @@ Route::get('user/{user}/temperatures', function (User $user) {
 
 Route::get('user/{user}/cleaning-zones', function (User $user) {
     return $user->cleaningZones;
+});
+
+Route::middleware('auth:sanctum')->post('/cleaning-zone/new', function (Request $request) {
+    $request->validate([
+        'name' => 'required',
+    ]);
+
+    CleaningZone::create([
+        'user_id' => auth()->id(),
+        'name' => $request->name,
+    ]);
+
+    return response()->json(['message' => 'Cleaning Zone created successfully.']);
 });
