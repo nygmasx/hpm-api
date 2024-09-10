@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AdvancedTracability;
+use App\Models\CleaningStation;
 use App\Models\CleaningZone;
 use App\Models\Equipment;
 use App\Models\Image;
@@ -224,6 +225,20 @@ Route::middleware('auth:sanctum')->post('/cleaning-zone/new', function (Request 
     return response()->json(['message' => 'Cleaning Zone created successfully.']);
 });
 
-Route::get('user/{cleaningZone}/cleaning-station', function (CleaningZone $cleaningZone) {
+Route::get('cleaning-zone/{cleaningZone}/cleaning-station', function (CleaningZone $cleaningZone) {
     return $cleaningZone->cleaningStations;
+});
+
+Route::middleware('auth:sanctum')->post('/cleaning-station/new', function (Request $request) {
+    $request->validate([
+        'name' => 'required',
+        'cleaning_zone_id' => 'required'
+    ]);
+
+    CleaningStation::create([
+        'cleaning_zone_id' => $request->zone_id,
+        'name' => $request->name,
+    ]);
+
+    return response()->json(['message' => 'Cleaning Station created successfully.']);
 });
