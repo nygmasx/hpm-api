@@ -261,3 +261,7 @@ Route::put('/cleaning-station/{id}/edit', function (Request $request, $id) {
     return response()->json(['message' => 'Cleaning Station updated successfully.']);
 });
 
+Route::delete('/cleaning-station/{cleaningStation}/delete', function (Request $request, CleaningStation $cleaningStation) {
+    return response()->json($cleaningStation->delete(), 200);
+
+});
