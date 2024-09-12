@@ -236,9 +236,28 @@ Route::post('/cleaning-station/new', function (Request $request) {
     ]);
 
     CleaningStation::create([
-        'cleaning_zone_id' => $request->zone_id,
+        'cleaning_zone_id' => $request->cleaning_zone_id,
         'name' => $request->name,
     ]);
 
     return response()->json(['message' => 'Cleaning Station created successfully.']);
 });
+
+Route::put('/cleaning-station/{id}/edit', function (Request $request, $id) {
+    // Validate the incoming request data
+    $request->validate([
+        'name' => 'required',
+        'cleaning_zone_id' => 'required'
+    ]);
+
+    $cleaningStation = CleaningStation::findOrFail($id);
+
+    $cleaningStation->update([
+        'name' => $request->name,
+        'cleaning_zone_id' => $request->cleaning_zone_id,
+    ]);
+
+    // Return a success message
+    return response()->json(['message' => 'Cleaning Station updated successfully.']);
+});
+
