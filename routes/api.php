@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AdvancedTracability;
+use App\Models\CleaningPlan;
 use App\Models\CleaningStation;
 use App\Models\CleaningZone;
 use App\Models\Equipment;
@@ -263,5 +264,41 @@ Route::put('/cleaning-station/{id}/edit', function (Request $request, $id) {
 
 Route::delete('/cleaning-station/{cleaningStation}/delete', function (Request $request, CleaningStation $cleaningStation) {
     return response()->json($cleaningStation->delete(), 200);
+});
 
+Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request $request) {
+    // Validate the request
+    $validatedData = $request->validate([
+        'date' => 'required|date',
+        'cleaning_zones' => 'required|array',
+        'cleaning_zones.*.cleaning_zone_id' => 'required|exists:cleaning_zone,id',
+        'cleaning_zones.*.cleaning_stations' => 'required|array',
+        'cleaning_zones.*.cleaning_stations.*.station_id' => 'required|exists:cleaning_station,id',
+        'cleaning_zones.*.cleaning_stations.*.comment' => 'nullable|string',
+        'cleaning_zones.*.cleaning_stations.*.image_url' => 'nullable|string',
+    ]);
+
+    // Create the CleaningPlan
+    $cleaningPlan = CleaningPlan::create([
+        'user_id' => auth()->id(),
+        'date' => $request->date,
+    ]);
+
+    // Iterate through the cleaning zones and stations to attach data to the pivot table
+    foreach ($request->cleaning_zones as $zoneData) {
+        $zoneId = $zoneData['cleaning_zone_id'];
+
+        foreach ($zoneData['cleaning_stations'] as $stationData) {
+            $stationId = $stationData['station_id'];
+
+            // Attach the data to the pivot table
+            $cleaningPlan->zones()->attach($zoneId, [
+                'cleaning_station_id' => $stationId,
+                'comment' => $stationData['comment'] ?? null,
+                'image_url' => $stationData['image_url'] ?? null,
+            ]);
+        }
+    }
+
+    return response()->json(['message' => 'Cleaning plan created successfully.']);
 });
