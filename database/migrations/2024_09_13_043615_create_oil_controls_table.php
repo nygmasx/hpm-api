@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('receptions', function (Blueprint $table) {
+        Schema::create('oil_controls', function (Blueprint $table) {
             $table->id();
-            $table->string('reference');
             $table->dateTime('date');
-            $table->foreignId('supplier_id')->constrained('suppliers');
             $table->foreignId('user_id')->constrained('users');
-            $table->string('service');
-            $table->text('additional_information')->nullable();
-            $table->string('non_compliance_reason')->nullable();
-            $table->string('non_compliance_picture')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('receptions');
+        Schema::dropIfExists('oil_controls');
     }
 };
