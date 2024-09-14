@@ -79,4 +79,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CleaningZone::class);
     }
+
+    public function oilTrays(): HasMany
+    {
+        return $this->hasMany(OilTray::class);
+    }
 }
