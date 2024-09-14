@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('polarity');
             $table->string('corrective_action')->nullable();
             $table->string('image_url')->nullable();
-            $table->text('comment')->nullable();
             $table->primary(['oil_control_id', 'oil_tray_id']);
             $table->timestamps();
         });

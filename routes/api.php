@@ -6,6 +6,8 @@ use App\Models\CleaningStation;
 use App\Models\CleaningZone;
 use App\Models\Equipment;
 use App\Models\Image;
+use App\Models\OilControl;
+use App\Models\OilTray;
 use App\Models\Product;
 use App\Models\Temperature;
 use App\Models\Tracability;
@@ -302,3 +304,65 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
 
     return response()->json(['message' => 'Cleaning plan created successfully.']);
 });
+
+Route::get('user/{user}/oil-trays', function (User $user) {
+    return $user->oiltrays;
+});
+
+Route::middleware('auth:sanctum')->post('/oil-tray/new', function (Request $request) {
+    $request->validate([
+        'name' => 'required',
+    ]);
+
+    $oilTray = OilTray::create([
+        'user_id' => auth()->id(),
+        'name' => $request->name
+    ]);
+
+    return response()->json(['message' => 'Oil tray created successfully.']);
+});
+
+Route::middleware('auth:sanctum')->post('/oil-control/new', function (Request $request) {
+    $request->validate([
+        'date' => 'required|date',
+        'oil_trays' => 'required|array',
+        'oil_trays.*.oil_tray_id' => 'required|exists:oilTray,id',
+        'oil_trays.*.control_type' => 'required|string',
+        'oil_trays.*.temperature' => 'required|numeric',
+        'oil_trays.*.polarity' => 'required|numeric',
+        'oil_trays.*.corrective_action' => 'required|string',
+        'oil_trays.*.image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
+    ]);
+
+    $oilControl = OilControl::create([
+        'user_id' => auth()->id(),
+        'date' => $request->date
+    ]);
+
+    foreach ($request->oil_trays as $index => $oilTrayData) {
+        $oilTray = Equipment::find($oilTrayData['oil_tray_id']);
+
+        // Handle image storage
+        $imageUrl = null;
+        if ($request->hasFile("oil_trays.{$index}.image")) {
+            $file = $request->file("oil_trays.{$index}.image");
+            $url = $file->store('oil_trays_pictures', 'public');
+            $image = Image::create(['url' => $url]);
+            $imageUrl = $url;
+        }
+
+        $oilControl->oilTrays()->attach($oilTray->id, [
+            'control_type' => $oilTrayData['control_type'],
+            'temperature' => $oilTrayData['temperature'],
+            'polarity' => $oilTrayData['polarity'],
+            'corrective_action' => $oilTrayData['corrective_action'],
+            'image_url' => $imageUrl,
+        ]);
+    }
+
+    return response()->json([
+        'message' => 'Oil control data submitted successfully',
+        'oil_control_id' => $oilControl->id
+    ], 201);
+});
+
