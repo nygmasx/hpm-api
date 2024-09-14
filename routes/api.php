@@ -326,7 +326,7 @@ Route::middleware('auth:sanctum')->post('/oil-control/new', function (Request $r
     $request->validate([
         'date' => 'required|date',
         'oil_trays' => 'required|array',
-        'oil_trays.*.oil_tray_id' => 'required|exists:oilTray,id',
+        'oil_trays.*.oil_tray_id' => 'required|exists:oil_trays,id',
         'oil_trays.*.control_type' => 'required|string',
         'oil_trays.*.temperature' => 'required|numeric',
         'oil_trays.*.polarity' => 'required|numeric',
@@ -365,4 +365,3 @@ Route::middleware('auth:sanctum')->post('/oil-control/new', function (Request $r
         'oil_control_id' => $oilControl->id
     ], 201);
 });
-
