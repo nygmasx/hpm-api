@@ -201,7 +201,7 @@ Route::get('user/{user}/simple-tracability', function (User $user) {
 });
 
 Route::get('user/{user}/advanced-tracability', function (User $user) {
-    return $user->tracabilities;
+    return $user->advancedTracabilities()->with(['images', 'products'])->get();
 });
 
 Route::get('user/{user}/temperatures', function (User $user) {
@@ -273,9 +273,9 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
     $validatedData = $request->validate([
         'date' => 'required|date',
         'cleaning_zones' => 'required|array',
-        'cleaning_zones.*.cleaning_zone_id' => 'required|exists:cleaning_zone,id',
+        'cleaning_zones.*.cleaning_zone_id' => 'required|exists:cleaning_zones,id',
         'cleaning_zones.*.cleaning_stations' => 'required|array',
-        'cleaning_zones.*.cleaning_stations.*.station_id' => 'required|exists:cleaning_station,id',
+        'cleaning_zones.*.cleaning_stations.*.station_id' => 'required|exists:cleaning_stations,id',
         'cleaning_zones.*.cleaning_stations.*.comment' => 'nullable|string',
         'cleaning_zones.*.cleaning_stations.*.image_url' => 'nullable|string',
     ]);
@@ -291,11 +291,8 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
         $zoneId = $zoneData['cleaning_zone_id'];
 
         foreach ($zoneData['cleaning_stations'] as $stationData) {
-            $stationId = $stationData['station_id'];
-
-            // Attach the data to the pivot table
             $cleaningPlan->zones()->attach($zoneId, [
-                'cleaning_station_id' => $stationId,
+                'cleaning_station_id' => $stationData['station_id'],
                 'comment' => $stationData['comment'] ?? null,
                 'image_url' => $stationData['image_url'] ?? null,
             ]);
