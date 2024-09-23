@@ -17,7 +17,8 @@ class AdvancedTracability extends Model
         'service'
     ];
 
-    public function user(): BelongsTo{
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
@@ -29,4 +30,5 @@ class AdvancedTracability extends Model
     public function images(): BelongsToMany {
         return $this->belongsToMany(Image::class, 'advanced_tracability_image');
     }
+
 }
