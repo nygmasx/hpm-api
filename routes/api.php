@@ -201,7 +201,9 @@ Route::get('user/{user}/simple-tracability', function (User $user) {
 });
 
 Route::get('user/{user}/advanced-tracability', function (User $user) {
-    return $user->advancedTracabilities()->with(['images', 'products'])->get();
+    return $user->advancedTracabilities()->with(['images', 'products' => function($query) {
+        $query->withPivot('expiration_date', 'quantity', 'label_picture');
+    }])->get();
 });
 
 Route::get('user/{user}/temperatures', function (User $user) {

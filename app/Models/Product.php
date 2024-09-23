@@ -17,13 +17,15 @@ class Product extends Model
         'code'
     ];
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
     public function advancedTracabilities(): BelongsToMany
     {
-        return $this->belongsToMany(AdvancedTracability::class, 'product_advanced_tracability');
+        return $this->belongsToMany(AdvancedTracability::class, 'product_advanced_tracability')
+            ->withPivot('expiration_date', 'quantity', 'label_picture')
+            ->withTimestamps();
     }
 }
