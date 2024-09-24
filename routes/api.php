@@ -304,6 +304,10 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
     return response()->json(['message' => 'Cleaning plan created successfully.']);
 });
 
+Route::get('user/{user}/cleaning-plan', function (User $user) {
+    return $user->cleaningPlans;
+});
+
 Route::get('user/{user}/oil-trays', function (User $user) {
     return $user->oiltrays;
 });
