@@ -92,4 +92,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(OilTray::class);
     }
+
+    public function oilControls(): HasMany
+    {
+        return $this->hasMany(OilControl::class);
+    }
 }
