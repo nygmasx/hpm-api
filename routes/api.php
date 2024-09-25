@@ -201,7 +201,7 @@ Route::get('user/{user}/simple-tracability', function (User $user) {
 });
 
 Route::get('user/{user}/advanced-tracability', function (User $user) {
-    return $user->advancedTracabilities()->with(['images', 'products' => function($query) {
+    return $user->advancedTracabilities()->with(['images', 'products' => function ($query) {
         $query->withPivot('expiration_date', 'quantity', 'label_picture');
     }])->get();
 });
@@ -304,8 +304,10 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
     return response()->json(['message' => 'Cleaning plan created successfully.']);
 });
 
-Route::get('user/{user}/cleaning-plan', function (User $user) {
-    return $user->cleaningPlans;
+Route::get('user/{user}/cleaning-plans', function (User $user) {
+    return $user->cleaningPlans()->with(['zones' => function ($query) {
+        $query->withPivot('comment', 'image_url');
+    }])->get();
 });
 
 Route::get('user/{user}/oil-trays', function (User $user) {
@@ -367,4 +369,10 @@ Route::middleware('auth:sanctum')->post('/oil-control/new', function (Request $r
         'message' => 'Oil control data submitted successfully',
         'oil_control_id' => $oilControl->id
     ], 201);
+});
+
+Route::get('user/{user}/oil-controls', function (User $user) {
+    return $user->oilControls->with(['oilTrays' => function ($query) {
+        $query->withPivot('control_type', 'temperature', 'control_type', 'polarity', 'corrective_action', 'image_url');
+    }])->get();
 });
