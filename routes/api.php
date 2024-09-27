@@ -9,6 +9,7 @@ use App\Models\Image;
 use App\Models\OilControl;
 use App\Models\OilTray;
 use App\Models\Product;
+use App\Models\Reception;
 use App\Models\Temperature;
 use App\Models\Tracability;
 use App\Models\User;
@@ -375,4 +376,52 @@ Route::get('user/{user}/oil-controls', function (User $user) {
     return $user->oilControls->with(['oilTrays' => function ($query) {
         $query->withPivot('control_type', 'temperature', 'control_type', 'polarity', 'corrective_action', 'image_url');
     }])->get();
+});
+
+Route::middleware('auth:sanctum')->post('/reception/new', function (Request $request) {
+    $request->validate([
+        'reference' => 'required|string',
+        'date' => 'required|date',
+        'supplier_id' => 'required|exists:suppliers,id',
+        'service' => 'required|string',
+        'additional_informations' => 'nullable|string',
+        'products' => 'required|array',
+        'products.*.product_id' => 'required|exists:products,id',
+        'non_compliance_reason' => 'nullable|string',
+        'non_compliance_picture' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    $reception = Reception::create([
+        'user_id' => auth()->id(),
+        'date' => $request->date,
+        'supplier_id' => $request->supplier_id,
+        'service' => $request->service,
+        'additional_information' => $request->additional_informations,
+        'non_compliance_reason' => $request->non_compliance_reason
+    ]);
+
+    foreach ($request->products as $productData) {
+        $product = Product::find($productData['product_id']);
+
+        // Store product image(s) and create Image records
+        $imageIds = [];
+        if (isset($productData['label_pictures'])) {
+            foreach ($productData['label_pictures'] as $file) {
+                $url = $file->store('label_pictures', 'public');
+                $image = Image::create(['url' => $url]);
+                $imageIds[] = $image->id;
+            }
+        }
+
+        if (!empty($imageIds)) {
+            $advancedTracability->images()->attach($imageIds);
+        }
+
+        // Attach product and image(s) to the advanced tracability
+        $advancedTracability->products()->attach($product->id, [
+            'expiration_date' => $productData['expiration_date'],
+            'quantity' => $productData['quantity'],
+            'label_picture' => $imageIds[0] ?? null, // Assuming one label picture per product, adjust as needed
+        ]);
+    }
 });
