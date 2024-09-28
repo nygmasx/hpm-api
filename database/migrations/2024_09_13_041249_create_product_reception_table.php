@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('product_reception', function (Blueprint $table) {
             $table->unSignedBigInteger('product_id');
             $table->unSignedBigInteger('reception_id');
+            $table->integer('quantity');
             $table->primary(['product_id', 'reception_id']);
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('reception_id')->references('id')->on('receptions')->onDelete('cascade');
