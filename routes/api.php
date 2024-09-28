@@ -16,6 +16,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -441,3 +442,6 @@ Route::middleware('auth:sanctum')->post('/reception/new', function (Request $req
     }
 });
 
+Route::get('user/{user}/suppliers', function (User $user) {
+    return $user->suppliers;
+});
