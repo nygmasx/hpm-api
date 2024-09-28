@@ -24,10 +24,13 @@ class AdvancedTracability extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'product_advanced_tracability');
+        return $this->belongsToMany(Product::class, 'product_advanced_tracability')
+            ->withPivot('expiration_date', 'quantity', 'label_picture')
+            ->withTimestamps();
     }
 
-    public function images(): BelongsToMany {
+    public function images(): BelongsToMany
+    {
         return $this->belongsToMany(Image::class, 'advanced_tracability_image');
     }
 
