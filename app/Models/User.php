@@ -51,9 +51,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function products(): BelongsToMany
+    public function products(): HasMany
     {
-        return $this->BelongsToMany(Product::class);
+        return $this->HasMany(Product::class);
     }
 
     public function tracabilities(): HasMany
