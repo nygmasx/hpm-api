@@ -8,10 +8,12 @@ use App\Models\Equipment;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\ProductTracability;
+use App\Models\Supplier;
 use App\Models\Tracability;
 use App\Models\User;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Factories\SupplierFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -35,5 +37,6 @@ class DatabaseSeeder extends Seeder
         Equipment::factory(10)->create();
         CleaningZone::factory(10)->create();
         CleaningStation::factory(10)->create();
+        Supplier::factory(10)->create();
     }
 }
