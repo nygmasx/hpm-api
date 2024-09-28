@@ -53,9 +53,7 @@ class User extends Authenticatable
 
     public function products(): BelongsToMany
     {
-        return $this->BelongsToMany(Product::class, 'product_advanced_tracability')
-            ->withPivot('expiration_date', 'quantity', 'label_picture')
-            ->withTimestamps();
+        return $this->BelongsToMany(Product::class);
     }
 
     public function tracabilities(): HasMany
