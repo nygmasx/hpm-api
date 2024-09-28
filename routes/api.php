@@ -387,41 +387,57 @@ Route::middleware('auth:sanctum')->post('/reception/new', function (Request $req
         'additional_informations' => 'nullable|string',
         'products' => 'required|array',
         'products.*.product_id' => 'required|exists:products,id',
+        'products.*.quantity' => 'required|integer|min:1',
         'non_compliance_reason' => 'nullable|string',
-        'non_compliance_picture' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        'non_compliance_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ]);
 
-    $reception = Reception::create([
-        'user_id' => auth()->id(),
-        'date' => $request->date,
-        'supplier_id' => $request->supplier_id,
-        'service' => $request->service,
-        'additional_information' => $request->additional_informations,
-        'non_compliance_reason' => $request->non_compliance_reason
-    ]);
-
-    foreach ($request->products as $productData) {
-        $product = Product::find($productData['product_id']);
-
-        // Store product image(s) and create Image records
-        $imageIds = [];
-        if (isset($productData['label_pictures'])) {
-            foreach ($productData['label_pictures'] as $file) {
-                $url = $file->store('label_pictures', 'public');
-                $image = Image::create(['url' => $url]);
-                $imageIds[] = $image->id;
-            }
-        }
-
-        if (!empty($imageIds)) {
-            $advancedTracability->images()->attach($imageIds);
-        }
-
-        // Attach product and image(s) to the advanced tracability
-        $advancedTracability->products()->attach($product->id, [
-            'expiration_date' => $productData['expiration_date'],
-            'quantity' => $productData['quantity'],
-            'label_picture' => $imageIds[0] ?? null, // Assuming one label picture per product, adjust as needed
+    try {
+        $reception = Reception::create([
+            'user_id' => auth()->id(),
+            'reference' => $request->reference,
+            'date' => $request->date,
+            'supplier_id' => $request->supplier_id,
+            'service' => $request->service,
+            'additional_information' => $request->additional_informations,
+            'non_compliance_reason' => $request->non_compliance_reason
         ]);
+
+        if ($request->hasFile('non_compliance_picture')) {
+            $path = $request->file('non_compliance_picture')->store('non_compliance_pictures', 'public');
+            $reception->non_compliance_picture = $path;
+            $reception->save();
+        }
+
+        // Handle products
+        foreach ($request->products as $productData) {
+            $product = Product::findOrFail($productData['product_id']);
+
+            $reception->products()->attach($product->id, [
+                'quantity' => $productData['quantity'],
+                'unit_price' => $product->price, // Assuming the product has a price field
+            ]);
+
+            // Update stock (if applicable)
+            $product->stock += $productData['quantity'];
+            $product->save();
+        }
+
+        return response()->json([
+            'message' => 'Reception created successfully',
+            'reception' => $reception->load('products', 'supplier'),
+        ], 201);
+
+    } catch (\Exception $e) {
+        // Delete the uploaded file if it exists
+        if (isset($path)) {
+            Storage::disk('public')->delete($path);
+        }
+
+        return response()->json([
+            'message' => 'An error occurred while creating the reception',
+            'error' => $e->getMessage(),
+        ], 500);
     }
 });
+
