@@ -416,11 +416,8 @@ Route::middleware('auth:sanctum')->post('/reception/new', function (Request $req
 
             $reception->products()->attach($product->id, [
                 'quantity' => $productData['quantity'],
-                'unit_price' => $product->price, // Assuming the product has a price field
             ]);
 
-            // Update stock (if applicable)
-            $product->stock += $productData['quantity'];
             $product->save();
         }
 
