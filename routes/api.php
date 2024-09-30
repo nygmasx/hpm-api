@@ -338,7 +338,7 @@ Route::middleware('auth:sanctum')->post('/oil-control/new', function (Request $r
         'oil_trays.*.temperature' => 'required|numeric',
         'oil_trays.*.polarity' => 'required|numeric',
         'oil_trays.*.corrective_action' => 'required|string',
-        'oil_trays.*.image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
+        'oil_trays.*.image' => 'required|image|mimes:jpg,jpeg,png|max:5120' // Increased max size to 5MB
     ]);
 
     $oilControl = OilControl::create([
@@ -347,14 +347,12 @@ Route::middleware('auth:sanctum')->post('/oil-control/new', function (Request $r
     ]);
 
     foreach ($request->oil_trays as $index => $oilTrayData) {
-        $oilTray = Equipment::find($oilTrayData['oil_tray_id']);
+        $oilTray = Equipment::findOrFail($oilTrayData['oil_tray_id']);
 
-        // Handle image storage
         $imageUrl = null;
         if ($request->hasFile("oil_trays.{$index}.image")) {
             $file = $request->file("oil_trays.{$index}.image");
             $url = $file->store('oil_trays_pictures', 'public');
-            $image = Image::create(['url' => $url]);
             $imageUrl = $url;
         }
 
@@ -374,9 +372,11 @@ Route::middleware('auth:sanctum')->post('/oil-control/new', function (Request $r
 });
 
 Route::get('user/{user}/oil-controls', function (User $user) {
-    return $user->oilControls->with(['oilTrays' => function ($query) {
-        $query->withPivot('control_type', 'temperature', 'control_type', 'polarity', 'corrective_action', 'image_url');
+    $oilControls = $user->oilControls()->with(['oilTrays' => function ($query) {
+        $query->withPivot('control_type', 'temperature', 'polarity', 'corrective_action', 'image_url');
     }])->get();
+
+    return response()->json($oilControls);
 });
 
 Route::middleware('auth:sanctum')->post('/reception/new', function (Request $request) {
