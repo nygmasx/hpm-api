@@ -442,3 +442,11 @@ Route::middleware('auth:sanctum')->post('/reception/new', function (Request $req
 Route::get('user/{user}/suppliers', function (User $user) {
     return $user->suppliers;
 });
+
+Route::get('user/{user}/receptions', function (User $user) {
+    $receptions = $user->receptions()->with(['products' => function ($query) {
+        $query->withPivot('quantity')->get();
+    }]);
+
+    return response()->json($receptions);
+});
