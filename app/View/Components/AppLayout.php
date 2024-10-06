@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use App\Livewire\Actions\Logout;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
@@ -14,4 +15,5 @@ class AppLayout extends Component
     {
         return view('layouts.app');
     }
+
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html data-theme="lemonade" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,24 +13,70 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <livewire:layout.navigation />
 
-            <!-- Page Heading -->
-            @if (isset($header))
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
+    {{-- The navbar with `sticky` and `full-width` --}}
+    <x-mary-nav sticky full-width>
+
+        <x-slot:brand>
+            {{-- Drawer toggle for "main-drawer" --}}
+            <label for="main-drawer" class="lg:hidden mr-3">
+                <x-mary-icon name="o-bars-3" class="cursor-pointer" />
+            </label>
+
+            {{-- Brand --}}
+            <div>HPM FOOD TRACKING</div>
+        </x-slot:brand>
+
+        {{-- Right side actions --}}
+        <x-slot:actions>
+            <x-mary-button label="Profil" icon="o-user" link="profile" class="btn-ghost btn-sm" responsive />
+        </x-slot:actions>
+    </x-mary-nav>
+
+    {{-- The main content with `full-width` --}}
+    <x-mary-main with-nav full-width>
+
+        {{-- This is a sidebar that works also as a drawer on small screens --}}
+        {{-- Notice the `main-drawer` reference here --}}
+        <x-slot:sidebar drawer="main-drawer" collapsible class="bg-emerald-700">
+
+            {{-- User --}}
+            @if($user = auth()->user())
+                <x-mary-list-item :item="$user" value="name" sub-value="email" no-separator no-hover class="pt-2">
+                    <x-slot:actions>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <x-mary-button type="submit" icon="o-power" class="btn-circle btn-ghost text-base-100 btn-xs" tooltip-left="Déconnexion" />
+                        </form>
+                    </x-slot:actions>
+                </x-mary-list-item>
+
+                <x-mary-menu-separator />
             @endif
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
+            {{-- Activates the menu item when a route matches the `link` property --}}
+            <x-mary-menu activate-by-route>
+                <x-mary-menu-item title="Home" icon="o-home" link="/" />
+                <x-mary-menu-item title="Utilisateurs" icon="o-users" link="/users" />
+                <x-mary-menu-item title="Fichiers" icon="s-inbox-arrow-down" link="/files" />
+                <x-mary-menu-sub title="Settings" icon="o-cog-6-tooth">
+                    <x-mary-menu-item title="Wifi" icon="o-wifi" link="####" />
+                    <x-mary-menu-item title="Archives" icon="o-archive-box" link="####" />
+                </x-mary-menu-sub>
+            </x-mary-menu>
+        </x-slot:sidebar>
+
+        {{-- The `$slot` goes here --}}
+        <x-slot:content>
+            {{ $slot }}
+        </x-slot:content>
+    </x-mary-main>
+
+    {{--  TOAST area --}}
+    <x-mary-toast />
+    @livewireScripts
     </body>
 </html>

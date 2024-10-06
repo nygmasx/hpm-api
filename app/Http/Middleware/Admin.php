@@ -12,13 +12,21 @@ class Admin
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->role != 'admin') {
+
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
-        return $next($request);
+
+        $userRole = Auth::user()->role;
+
+        if ($userRole === 'admin') {
+            return $next($request);
+        }
+
+        return redirect()->route('welcome')->with('error', 'You do not have admin access.');
     }
 }

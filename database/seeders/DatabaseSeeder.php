@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             "email" => "admin@admin.com",
             "name" => "Admin",
+            "role" => "admin",
         ]);
         Product::factory(15)->create();
         Image::factory(5)->create();
