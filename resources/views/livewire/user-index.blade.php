@@ -6,6 +6,7 @@ $headers = [
     ['key' => 'id', 'label' => '#', 'class' => 'text-lg'],
     ['key' => 'name', 'label' => 'Nom', 'class' => 'text-lg'],
     ['key' => 'email', 'label' => 'Email', 'class' => 'text-lg'],
+    ['key' => 'role', 'label' => 'Rôle', 'class' => 'text-lg'],
 ];
 
 @endphp

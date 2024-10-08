@@ -41,7 +41,7 @@
 
         {{-- This is a sidebar that works also as a drawer on small screens --}}
         {{-- Notice the `main-drawer` reference here --}}
-        <x-slot:sidebar drawer="main-drawer" collapsible class="bg-emerald-700">
+        <x-slot:sidebar drawer="main-drawer" collapsible class="">
 
             {{-- User --}}
             @if($user = auth()->user())
@@ -49,7 +49,7 @@
                     <x-slot:actions>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <x-mary-button type="submit" icon="o-power" class="btn-circle btn-ghost text-base-100 btn-xs" tooltip-left="Déconnexion" />
+                            <x-mary-button type="submit" icon="o-power" class="btn-circle btn-ghost text-black btn-xs" tooltip-left="Déconnexion" />
                         </form>
                     </x-slot:actions>
                 </x-mary-list-item>
