@@ -445,8 +445,8 @@ Route::get('user/{user}/suppliers', function (User $user) {
 
 Route::get('user/{user}/receptions', function (User $user) {
     $receptions = $user->receptions()->with(['products' => function ($query) {
-        $query->withPivot('quantity')->get();
-    }]);
+        $query->withPivot('quantity');
+    }])->get();
 
     return response()->json($receptions);
 });
