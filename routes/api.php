@@ -450,3 +450,7 @@ Route::get('user/{user}/receptions', function (User $user) {
 
     return response()->json($receptions);
 });
+
+Route::get('user/{user}/files', function (User $user) {
+    return $user->files;
+});

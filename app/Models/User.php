@@ -107,4 +107,9 @@ class User extends Authenticatable
     {
         return $this->HasMany(Reception::class);
     }
+
+    public function files(): HasMany
+    {
+        return $this->HasMany(File::class);
+    }
 }
