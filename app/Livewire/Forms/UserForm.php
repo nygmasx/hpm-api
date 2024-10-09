@@ -9,17 +9,28 @@ use Livewire\Form;
 
 class UserForm extends Form
 {
-    #[Validate('string', 'required')]
-    public $name;
+    public ?User $user = null;
 
-    #[Validate('email', 'required')]
-    public $email;
+    #[Validate('required|string|max:255')]
+    public $name = '';
 
-    #[Validate('required')]
-    public $password;
+    #[Validate('required|email|max:255')]
+    public $email = '';
+
+    public $password = '';
 
     #[Validate('boolean')]
     public $admin = false;
+
+    protected function rules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255' . ($this->user ? '|unique:users,email,' . $this->user->id : '|unique:users,email'),
+            'password' => $this->user ? 'nullable|string|min:8' : 'required|string|min:8',
+            'admin' => 'boolean',
+        ];
+    }
 
     public function store()
     {
@@ -32,6 +43,34 @@ class UserForm extends Form
             'role' => $this->admin ? 'admin' : null,
         ]);
 
-        $this->reset();
+        $this->reset('name', 'email', 'password', 'admin');
+    }
+
+    public function update()
+    {
+        $this->validate();
+
+        $data = [
+            'name' => $this->name,
+            'email' => $this->email,
+            'role' => $this->admin ? 'admin' : null,
+        ];
+
+        if ($this->password) {
+            $data['password'] = Hash::make($this->password);
+        }
+
+        $this->user->update($data);
+
+        $this->reset('user', 'name', 'email', 'password', 'admin');
+    }
+
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->password = '';
+        $this->admin = $user->role === 'admin';
     }
 }

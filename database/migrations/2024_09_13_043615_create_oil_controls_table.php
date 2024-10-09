@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('oil_controls', function (Blueprint $table) {
             $table->id();
             $table->dateTime('date');
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -35,5 +35,10 @@
             {{ $file->name }}
         </a>
         @endscope
+        @scope('actions', $files)
+        <div class="flex flex-row gap-2">
+            <x-mary-button icon="o-trash" wire:click="delete({{ $files->id }})" spinner class="btn-sm"/>
+        </div>
+        @endscope
     </x-mary-table>
 </div>

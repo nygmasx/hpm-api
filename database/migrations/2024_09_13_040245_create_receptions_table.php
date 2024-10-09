@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('reference');
             $table->dateTime('date');
             $table->foreignId('supplier_id')->constrained('suppliers');
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('service');
             $table->text('additional_information')->nullable();
             $table->string('non_compliance_reason')->nullable();

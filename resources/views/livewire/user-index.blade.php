@@ -1,13 +1,13 @@
 @php
 
-$users = App\Models\User::all();
+    $users = App\Models\User::all();
 
-$headers = [
-    ['key' => 'id', 'label' => '#', 'class' => 'text-lg'],
-    ['key' => 'name', 'label' => 'Nom', 'class' => 'text-lg'],
-    ['key' => 'email', 'label' => 'Email', 'class' => 'text-lg'],
-    ['key' => 'role', 'label' => 'Rôle', 'class' => 'text-lg'],
-];
+    $headers = [
+        ['key' => 'id', 'label' => '#', 'class' => 'text-lg'],
+        ['key' => 'name', 'label' => 'Nom', 'class' => 'text-lg'],
+        ['key' => 'email', 'label' => 'Email', 'class' => 'text-lg'],
+        ['key' => 'role', 'label' => 'Rôle', 'class' => 'text-lg'],
+    ];
 
 @endphp
 
@@ -18,10 +18,17 @@ $headers = [
         </x-slot:middle>
         <x-slot:actions>
             <x-mary-button icon="o-funnel"/>
-            <x-mary-button icon="o-plus" class="btn-primary" @click="$wire.postModal = true"/>
+            <x-mary-button icon="o-plus" class="btn-primary" @click="$wire.showModal()"/>
         </x-slot:actions>
     </x-mary-header>
-    <x-mary-table :headers="$headers" :rows="$users" striped @row-click="alert($event.detail.name)"/>
+    <x-mary-table :headers="$headers" :rows="$users" striped>
+        @scope('actions', $user)
+        <div class="flex flex-row gap-2">
+            <x-mary-button icon="o-trash" wire:click="delete({{ $user->id }})" spinner class="btn-sm"/>
+            <x-mary-button icon="o-pencil" wire:click="edit({{ $user->id }})" spinner class="btn-sm"/>
+        </div>
+        @endscope
+    </x-mary-table>
 
     <x-mary-modal wire:model="postModal" class="backdrop-blur">
         <div class="mb-5">

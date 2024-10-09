@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('operation_type');
             $table->text('additional_informations')->nullable();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }
