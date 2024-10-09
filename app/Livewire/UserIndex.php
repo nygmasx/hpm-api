@@ -5,11 +5,15 @@ namespace App\Livewire;
 use App\Livewire\Forms\UserForm;
 use App\Models\User;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class UserIndex extends Component
 {
+    use WithPagination;
+
     public bool $postModal = false;
     public bool $editMode = false;
+    public string $search = '';
 
     public UserForm $form;
 
@@ -21,7 +25,18 @@ class UserIndex extends Component
 
     public function render()
     {
-        return view('livewire.user-index')
+        $users = User::where('name', 'like', '%' . $this->search . '%')
+            ->orWhere('email', 'like', '%' . $this->search . '%')
+            ->paginate(10);
+
+        $headers = [
+            ['key' => 'id', 'label' => '#', 'class' => 'text-lg'],
+            ['key' => 'name', 'label' => 'Nom', 'class' => 'text-lg'],
+            ['key' => 'email', 'label' => 'Email', 'class' => 'text-lg'],
+            ['key' => 'role', 'label' => 'Rôle', 'class' => 'text-lg'],
+        ];
+
+        return view('livewire.user-index', compact('users', 'headers'))
             ->layout('layouts.app');
     }
 
@@ -46,5 +61,10 @@ class UserIndex extends Component
     public function delete($id)
     {
         User::find($id)->delete();
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
     }
 }

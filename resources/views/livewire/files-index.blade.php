@@ -1,44 +1,36 @@
-@php
-
-    $files = App\Models\File::with('user')->get();
-
-    $users = \App\Models\User::all();
-
-    $headers = [
-        ['key' => 'id', 'label' => '#', 'class' => 'text-lg'],
-        ['key' => 'name', 'label' => 'Nom', 'class' => 'text-lg'],
-        ['key' => 'user.name', 'label' => 'Utilisateur', 'class' => 'text-lg'],
-        ['key' => 'file_type', 'label' => 'Type', 'class' => 'text-lg'],
-        ['key' => 'size', 'label' => 'Taille', 'class' => 'text-lg'],
-        ['key' => 'date', 'label' => 'Date', 'class' => 'text-lg'],
-    ];
-
-
-@endphp
-
 <div class="">
     <x-mary-header title="Fichiers" subtitle="Liste des fichiers">
         <x-slot:middle class="!justify-end">
-            <x-mary-input icon="o-bolt" placeholder="Recherche..."/>
+            <x-mary-input icon="o-bolt" placeholder="Recherche..." wire:model.live.debounce.300ms="search"/>
         </x-slot:middle>
         <x-slot:actions>
             <x-mary-button icon="o-funnel"/>
             <x-mary-button icon="o-plus" class="btn-primary" link="/files/new"/>
         </x-slot:actions>
     </x-mary-header>
-    <x-mary-table :headers="$headers" :rows="$files" striped @row-click="alert($event.detail.name)">
+    <x-mary-table :headers="$headers" :rows="$files" striped>
         @scope('cell_name', $file)
         <a href="{{ Storage::url($file->path) }}"
-           download="http://127.0.0.1:8000/storage/{{ $file->path }}"
+           download
            class="text-blue-600 hover:underline"
            @click.stop>
             {{ $file->name }}
         </a>
         @endscope
-        @scope('actions', $files)
+        @scope('cell_size', $file)
+        {{ number_format($file->size / 1024, 2) }} KB
+        @endscope
+        @scope('cell_created_at', $file)
+        {{ $file->created_at->format('d/m/Y H:i') }}
+        @endscope
+        @scope('actions', $file)
         <div class="flex flex-row gap-2">
-            <x-mary-button icon="o-trash" wire:click="delete({{ $files->id }})" spinner class="btn-sm"/>
+            <x-mary-button icon="o-trash" wire:click="delete({{ $file->id }})" spinner class="btn-sm"/>
         </div>
         @endscope
     </x-mary-table>
+
+    <div class="mt-4">
+        {{ $files->links() }}
+    </div>
 </div>
