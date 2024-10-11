@@ -10,6 +10,7 @@ use App\Models\OilControl;
 use App\Models\OilTray;
 use App\Models\Product;
 use App\Models\Reception;
+use App\Models\Supplier;
 use App\Models\Temperature;
 use App\Models\Tracability;
 use App\Models\User;
@@ -427,7 +428,6 @@ Route::middleware('auth:sanctum')->post('/reception/new', function (Request $req
         ], 201);
 
     } catch (\Exception $e) {
-        // Delete the uploaded file if it exists
         if (isset($path)) {
             Storage::disk('public')->delete($path);
         }
@@ -441,6 +441,21 @@ Route::middleware('auth:sanctum')->post('/reception/new', function (Request $req
 
 Route::get('user/{user}/suppliers', function (User $user) {
     return $user->suppliers;
+});
+
+Route::middleware('auth:sanctum')->post('/supplier/new', function (Request $request) {
+
+    $request->validate([
+        'name' => 'required',
+    ]);
+
+    Supplier::create([
+        'user_id' => auth()->id(),
+        'name' => $request->name,
+    ]);
+
+    return response()->json(['message' => 'Supplier created successfully.']);
+
 });
 
 Route::get('user/{user}/receptions', function (User $user) {
