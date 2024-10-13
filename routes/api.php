@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Reception;
 use App\Models\Supplier;
 use App\Models\Temperature;
+use App\Models\TemperatureChangement;
 use App\Models\Tracability;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -478,53 +479,55 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
         'additional_informations' => 'nullable|string',
         'products' => 'required|array',
         'products.*.product_id' => 'required|exists:products,id',
-        'products.*.start_date' => 'required|date',
-        'products.*.start_temperature' => 'required|date',
-        'non_compliance_reason' => 'nullable|string',
-        'non_compliance_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'start_date' => 'required|date',
+        'start_temperature' => 'required|string',
+        'end_date' => 'nullable|date',
+        'end_temperature' => 'nullable|string',
+        'is_finished' => 'required|boolean',
+        'corrective_action' => 'nullable|string',
     ]);
 
     try {
-        $reception = Reception::create([
+        $temperatureChangement = TemperatureChangement::create([
             'user_id' => auth()->id(),
-            'reference' => $request->reference,
-            'date' => $request->date,
-            'supplier_id' => $request->supplier_id,
-            'service' => $request->service,
-            'additional_information' => $request->additional_informations,
-            'non_compliance_reason' => $request->non_compliance_reason
+            'operation_type' => 'required|string',
+            'date' => 'required|date',
+            'additional_informations' => 'nullable|string',
+            'start_date' => 'required|date',
+            'start_temperature' => 'required|string',
+            'end_date' => 'nullable|date',
+            'end_temperature' => 'nullable|string',
+            'is_finished' => 'required|boolean',
+            'corrective_action' => 'nullable|string',
         ]);
-
-        if ($request->hasFile('non_compliance_picture')) {
-            $path = $request->file('non_compliance_picture')->store('non_compliance_pictures', 'public');
-            $reception->non_compliance_picture = $path;
-            $reception->save();
-        }
 
         // Handle products
         foreach ($request->products as $productData) {
             $product = Product::findOrFail($productData['product_id']);
 
-            $reception->products()->attach($product->id, [
-                'quantity' => $productData['quantity'],
-            ]);
+            $temperatureChangement->products()->attach($product->id);
 
             $product->save();
         }
 
         return response()->json([
-            'message' => 'Reception created successfully',
-            'reception' => $reception->load('products', 'supplier'),
+            'message' => 'Tcp created successfully',
+            'reception' => $temperatureChangement->load('products'),
         ], 201);
 
     } catch (\Exception $e) {
-        if (isset($path)) {
-            Storage::disk('public')->delete($path);
-        }
 
         return response()->json([
-            'message' => 'An error occurred while creating the reception',
+            'message' => 'An error occurred while creating the Temperature Changement',
             'error' => $e->getMessage(),
         ], 500);
     }
+});
+
+Route::get('user/{user}/temperature-changement', function (User $user) {
+    $receptions = $user->temperatureChangements()->with(['products' => function ($query) {
+        $query->withPivot();
+    }])->get();
+
+    return response()->json($receptions);
 });

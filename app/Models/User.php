@@ -77,6 +77,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Temperature::class);
     }
+    public function temperatureChangements(): HasMany
+    {
+        return $this->hasMany(TemperatureChangement::class);
+    }
 
     public function cleaningZones(): HasMany
     {
