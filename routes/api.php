@@ -475,7 +475,6 @@ Route::get('user/{user}/files', function (User $user) {
 Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) {
     $request->validate([
         'operation_type' => 'required|string',
-        'date' => 'required|date',
         'additional_informations' => 'nullable|string',
         'products' => 'required|array',
         'products.*.product_id' => 'required|exists:products,id',
