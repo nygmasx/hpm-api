@@ -22,6 +22,7 @@ class FilesCreate extends Component
     public function save()
     {
         $this->form->store();
+
         return redirect(route('files.index'));
     }
 }

@@ -16,12 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('temperature_changement_id');
             $table->foreign('product_id')->references('id')->on('products');
             $table->foreign('temperature_changement_id')->references('id')->on('temperature_changements');
-            $table->dateTime('start_date');
-            $table->string('start_temperature');
-            $table->boolean('is_finished');
-            $table->dateTime('end_date')->nullable();
-            $table->string('end_temperature')->nullable();
-            $table->string('corrective_action')->nullable();
             $table->timestamps();
         });
     }
