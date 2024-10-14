@@ -480,8 +480,8 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
         'products.*.product_id' => 'required|exists:products,id',
         'start_date' => 'required|date',
         'start_temperature' => 'required|string',
-        'end_date' => 'nullable|string',
-        'end_temperature' => 'nullable|date',
+        'end_date' => 'nullable|date',
+        'end_temperature' => 'nullable|sring',
         'is_finished' => 'required|boolean',
         'corrective_action' => 'nullable|string',
     ]);
