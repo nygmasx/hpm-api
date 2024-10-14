@@ -478,10 +478,10 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
         'additional_informations' => 'nullable|string',
         'products' => 'required|array',
         'products.*.product_id' => 'required|exists:products,id',
-        'start_date' => 'required|string',
+        'start_date' => 'required|date',
         'start_temperature' => 'required|string',
         'end_date' => 'nullable|string',
-        'end_temperature' => 'nullable|string',
+        'end_temperature' => 'nullable|date',
         'is_finished' => 'required|boolean',
         'corrective_action' => 'nullable|string',
     ]);
@@ -489,14 +489,14 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
     try {
         $temperatureChangement = TemperatureChangement::create([
             'user_id' => auth()->id(),
-            'operation_type' => 'required|string',
-            'additional_informations' => 'nullable|string',
-            'start_date' => 'required|string',
-            'start_temperature' => 'required|string',
-            'end_date' => 'nullable|date',
-            'end_temperature' => 'nullable|string',
-            'is_finished' => 'required|boolean',
-            'corrective_action' => 'nullable|string',
+            'operation_type' => $request->operation_type,
+            'additional_informations' => $request->additional_informations,
+            'start_date' => $request->start_date,
+            'start_temperature' => $request->start_temperature,
+            'end_date' => $request->end_date,
+            'end_temperature' => $request->end_temperature,
+            'is_finished' => $request->is_finished,
+            'corrective_action' => $request->corrective_action,
         ]);
 
         // Handle products
