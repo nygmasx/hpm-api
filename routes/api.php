@@ -481,7 +481,7 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
         'start_date' => 'required|date',
         'start_temperature' => 'required|string',
         'end_date' => 'nullable|date',
-        'end_temperature' => 'nullable|sring',
+        'end_temperature' => 'nullable|string',
         'is_finished' => 'required|boolean',
         'corrective_action' => 'nullable|string',
     ]);
