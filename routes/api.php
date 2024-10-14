@@ -490,9 +490,8 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
         $temperatureChangement = TemperatureChangement::create([
             'user_id' => auth()->id(),
             'operation_type' => 'required|string',
-            'date' => 'required|date',
             'additional_informations' => 'nullable|string',
-            'start_date' => 'required|date',
+            'start_date' => 'required|string',
             'start_temperature' => 'required|string',
             'end_date' => 'nullable|date',
             'end_temperature' => 'nullable|string',
