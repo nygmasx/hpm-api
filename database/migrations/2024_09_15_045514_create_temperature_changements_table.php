@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('operation_type');
             $table->text('additional_informations')->nullable();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->dateTime('start_date');
+            $table->string('start_date');
             $table->string('start_temperature');
             $table->boolean('is_finished')->default(false);
-            $table->dateTime('end_date')->nullable();
+            $table->string('end_date')->nullable();
             $table->string('end_temperature')->nullable();
             $table->string('corrective_action')->nullable();
             $table->timestamps();
