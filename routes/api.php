@@ -527,3 +527,30 @@ Route::get('user/{user}/temperature-changement', function (User $user) {
 
     return response()->json($receptions);
 });
+
+Route::put('/temperatures-changement/{id}/edit', function (Request $request, $id) {
+    // Validate the incoming request data
+    $request->validate([
+        'start_date' => 'nullable|date',
+        'start_temperature' => 'nullable|string',
+        'end_date' => 'required|date',
+        'end_temperature' => 'required|string',
+    ]);
+
+    $cleaningStation = TemperatureChangement::findOrFail($id);
+
+    $cleaningStation->update([
+        'start_date' => $request->start_date,
+        'start_temperature' => $request->start_temperature,
+        'end_date' => $request->end_date,
+        'end_temperature' => $request->end_temperature,
+        'is_finished' => true
+    ]);
+
+    // Return a success message
+    return response()->json(['message' => 'Temperature changement updated successfully.']);
+});
+
+Route::get('/tcp/{tcp}', function (TemperatureChangement $tcp) {
+    return $tcp->load('products');
+});
