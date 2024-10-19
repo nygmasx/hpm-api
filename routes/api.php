@@ -523,7 +523,7 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
 });
 
 Route::get('user/{user}/temperature-changement', function (User $user) {
-    $temperatureChangements = $user->temperatureChangements()->with('products');
+    $temperatureChangements = $user->temperatureChangements();
 
     return response()->json($temperatureChangements);
 });
