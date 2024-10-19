@@ -537,15 +537,16 @@ Route::put('/temperatures-changement/{id}/edit', function (Request $request, $id
         'end_temperature' => 'required|string',
     ]);
 
-    $cleaningStation = TemperatureChangement::findOrFail($id);
+    $temperatureChangement = TemperatureChangement::findOrFail($id);
 
-    $cleaningStation->update([
+    $temperatureChangement->update([
         'start_date' => $request->start_date,
         'start_temperature' => $request->start_temperature,
         'end_date' => $request->end_date,
         'end_temperature' => $request->end_temperature,
-        'is_finished' => true
     ]);
+
+    $temperatureChangement->is_finished = true;
 
     // Return a success message
     return response()->json(['message' => 'Temperature changement updated successfully.']);
