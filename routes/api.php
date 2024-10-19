@@ -507,7 +507,7 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
         }
 
         return response()->json([
-            'message' => 'Tcp created successfully',
+            'message' => 'Tcp created successfully aaa',
             'reception' => $temperatureChangement->load('products'),
         ], 201);
 
