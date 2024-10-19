@@ -482,7 +482,7 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
         'start_temperature' => 'required|string',
         'end_date' => 'nullable|date',
         'end_temperature' => 'nullable|string',
-        'is_finished' => 'required|boolean',
+        'is_finished' => 'required|in:0,1',  // Changed to accept string '0' or '1'
         'corrective_action' => 'nullable|string',
     ]);
 
@@ -495,16 +495,14 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
             'start_temperature' => $request->start_temperature,
             'end_date' => $request->end_date,
             'end_temperature' => $request->end_temperature,
-            'is_finished' => $request->is_finished,
+            'is_finished' => $request->is_finished === '1',  // Convert to boolean
             'corrective_action' => $request->corrective_action,
         ]);
 
         // Handle products
         foreach ($request->products as $productData) {
             $product = Product::findOrFail($productData['product_id']);
-
             $temperatureChangement->products()->attach($product->id);
-
             $product->save();
         }
 
@@ -514,7 +512,6 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
         ], 201);
 
     } catch (\Exception $e) {
-
         return response()->json([
             'message' => 'An error occurred while creating the Temperature Changement',
             'error' => $e->getMessage(),
