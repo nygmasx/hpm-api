@@ -19,6 +19,7 @@ class TemperatureChangement extends Model
         'start_temperature',
         'end_temperature',
         'end_date',
+        'is_finished',
         'corrective_action'
     ];
 
