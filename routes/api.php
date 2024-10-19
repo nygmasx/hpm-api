@@ -523,9 +523,9 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
 });
 
 Route::get('user/{user}/temperature-changement', function (User $user) {
-    $receptions = $user->temperatureChangements()->with('products')->where('is_finished');
+    $temperatureChangements = $user->temperatureChangements()->with('products');
 
-    return response()->json($receptions);
+    return response()->json($temperatureChangements);
 });
 
 Route::put('/temperatures-changement/{id}/edit', function (Request $request, $id) {
