@@ -528,25 +528,43 @@ Route::get('user/{user}/temperature-changement', function (User $user) {
 Route::put('/temperatures-changement/{id}/edit', function (Request $request, $id) {
     // Validate the incoming request data
     $request->validate([
-        'start_date' => 'nullable|date',
-        'start_temperature' => 'nullable|string',
-        'end_date' => 'required|date',
-        'end_temperature' => 'required|string',
+        'start_date' => 'required|date',
+        'start_temperature' => 'required|string',
+        'end_date' => 'nullable|date',
+        'end_temperature' => 'nullable|string',
+        'is_finished' => 'required|boolean',
+        'corrective_action' => 'nullable|string',
+        'operation_type' => 'required|string',
+        'additional_informations' => 'nullable|string',
     ]);
 
     $temperatureChangement = TemperatureChangement::findOrFail($id);
 
-    $temperatureChangement->update([
+    $updateData = [
         'start_date' => $request->start_date,
         'start_temperature' => $request->start_temperature,
-        'end_date' => $request->end_date,
-        'end_temperature' => $request->end_temperature,
+        'operation_type' => $request->operation_type,
+        'additional_informations' => $request->additional_informations,
+        'is_finished' => $request->is_finished,
+    ];
+
+    if ($request->is_finished) {
+        $updateData['end_date'] = $request->end_date;
+        $updateData['end_temperature'] = $request->end_temperature;
+        $updateData['corrective_action'] = null; // Clear corrective action when finished
+    } else {
+        $updateData['end_date'] = null;
+        $updateData['end_temperature'] = null;
+        $updateData['corrective_action'] = $request->corrective_action;
+    }
+
+    $temperatureChangement->update($updateData);
+
+    // Return a success message with the updated temperature changement
+    return response()->json([
+        'message' => 'Temperature changement updated successfully.',
+        'temperature_changement' => $temperatureChangement
     ]);
-
-    $temperatureChangement->is_finished = true;
-
-    // Return a success message
-    return response()->json(['message' => 'Temperature changement updated successfully.']);
 });
 
 Route::get('/tcp/{tcp}', function (TemperatureChangement $tcp) {
