@@ -549,6 +549,12 @@ Route::get('user/{user}/temperature-changement', function (User $user) {
     return response()->json($temperatureChangements);
 });
 
+Route::get('user/{user}/temperature-changements', function (User $user) {
+    $temperatureChangements = $user->temperatureChangements()->with('products')->get();
+
+    return response()->json($temperatureChangements);
+});
+
 Route::put('/temperatures-changement/{id}/edit', function (Request $request, $id) {
     // Validate the incoming request data
     $request->validate([
