@@ -283,7 +283,7 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
         'cleaning_zones.*.cleaning_stations' => 'required|array',
         'cleaning_zones.*.cleaning_stations.*.station_id' => 'required|exists:cleaning_stations,id',
         'cleaning_zones.*.cleaning_stations.*.comment' => 'nullable|string',
-        'cleaning_zones.*.cleaning_stations.*.image_url' => 'nullable|string',
+        'cleaning_zones.*.cleaning_stations.*.image' => 'nullable|image|mimes:jpeg,png,jpg', // Validation pour l'image
     ]);
 
     // Create the CleaningPlan
@@ -292,20 +292,43 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
         'date' => $request->date,
     ]);
 
-    // Iterate through the cleaning zones and stations to attach data to the pivot table
+    // Iterate through the cleaning zones and stations
     foreach ($request->cleaning_zones as $zoneData) {
         $zoneId = $zoneData['cleaning_zone_id'];
 
         foreach ($zoneData['cleaning_stations'] as $stationData) {
+            $imageUrl = null;
+
+            // Traitement de l'image si elle existe
+            if (isset($stationData['image']) && $stationData['image']->isValid()) {
+                $image = $stationData['image'];
+
+                // Générer un nom unique pour l'image
+                $fileName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+
+                // Définir le chemin de stockage
+                $path = 'cleaning-plans/' . $cleaningPlan->id . '/stations';
+
+                // Stocker l'image
+                $imagePath = $image->storeAs($path, $fileName, 'public');
+
+                // Générer l'URL publique
+                $imageUrl = Storage::url($imagePath);
+            }
+
+            // Attacher la station avec les données
             $cleaningPlan->zones()->attach($zoneId, [
                 'cleaning_station_id' => $stationData['station_id'],
                 'comment' => $stationData['comment'] ?? null,
-                'image_url' => $stationData['image_url'] ?? null,
+                'image_url' => $imageUrl,
             ]);
         }
     }
 
-    return response()->json(['message' => 'Cleaning plan created successfully.']);
+    return response()->json([
+        'message' => 'Cleaning plan created successfully.',
+        'cleaning_plan' => $cleaningPlan->load('zones')
+    ]);
 });
 
 Route::get('user/{user}/cleaning-plans', function (User $user) {
@@ -340,7 +363,7 @@ Route::middleware('auth:sanctum')->post('/oil-control/new', function (Request $r
         'oil_trays.*.temperature' => 'required|numeric',
         'oil_trays.*.polarity' => 'required|numeric',
         'oil_trays.*.corrective_action' => 'required|string',
-        'oil_trays.*.image' => 'required|image|mimes:jpg,jpeg,png|max:5120' // Increased max size to 5MB
+        'oil_trays.*.image' => 'required|image|mimes:jpg,jpeg,png' // Increased max size to 5MB
     ]);
 
     $oilControl = OilControl::create([
@@ -392,7 +415,7 @@ Route::middleware('auth:sanctum')->post('/reception/new', function (Request $req
         'products.*.product_id' => 'required|exists:products,id',
         'products.*.quantity' => 'required|integer|min:1',
         'non_compliance_reason' => 'nullable|string',
-        'non_compliance_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'non_compliance_picture' => 'nullable|image|mimes:jpg,jpeg,png',
     ]);
 
     try {
