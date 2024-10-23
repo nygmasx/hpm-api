@@ -283,7 +283,7 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
         'cleaning_zones.*.cleaning_stations' => 'required|array',
         'cleaning_zones.*.cleaning_stations.*.station_id' => 'required|exists:cleaning_stations,id',
         'cleaning_zones.*.cleaning_stations.*.comment' => 'nullable|string',
-        'cleaning_zones.*.cleaning_stations.*.image' => 'nullable|image|mimes:jpeg,png,jpg', // Validation pour l'image
+        'cleaning_zones.*.cleaning_stations.*.image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validation pour l'image
     ]);
 
     // Create the CleaningPlan
