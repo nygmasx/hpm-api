@@ -364,7 +364,7 @@ Route::middleware('auth:sanctum')->post('/oil-control/new', function (Request $r
         'oil_trays.*.temperature' => 'required|numeric',
         'oil_trays.*.polarity' => 'required|numeric',
         'oil_trays.*.corrective_action' => 'required|string',
-        'oil_trays.*.image' => 'required|image|mimes:jpg,jpeg,png|max:5120' // Increased max size to 5MB
+        'oil_trays.*.image' => 'required|image|mimes:jpg,jpeg,png'
     ]);
 
     $oilControl = OilControl::create([
@@ -416,7 +416,7 @@ Route::middleware('auth:sanctum')->post('/reception/new', function (Request $req
         'products.*.product_id' => 'required|exists:products,id',
         'products.*.quantity' => 'required|integer|min:1',
         'non_compliance_reason' => 'nullable|string',
-        'non_compliance_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'non_compliance_picture' => 'nullable|image|mimes:jpg,jpeg,png',
     ]);
 
     try {
