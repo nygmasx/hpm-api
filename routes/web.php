@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'admin')
     ->middleware(['auth', 'admin', 'verified'])
-    ->name('admin');
+    ->name('admin.index');
 
 Route::get('/users', UserIndex::class)
     ->middleware(['auth', 'admin'])

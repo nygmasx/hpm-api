@@ -5,13 +5,25 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
+    <x-mary-header title="Dashboard" separator/>
+    <div>
+        <div class="flex gap-4">
+            <x-mary-stat
+                title="Utilisateurs"
+                color="text-white"
+                value="44"
+                icon="o-users"
+                tooltip="Utilisateurs"
+                class="bg-black text-white h-50"
+            />
+            <x-mary-stat
+                title="Utilisateurs"
+                color="text-white"
+                value="44"
+                icon="o-users"
+                tooltip="Utilisateurs"
+                class="bg-black text-white"
+            />
         </div>
     </div>
 </x-app-layout>

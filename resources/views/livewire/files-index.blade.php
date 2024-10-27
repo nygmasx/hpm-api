@@ -1,14 +1,13 @@
-<div class="">
-    <x-mary-header title="Fichiers" subtitle="Liste des fichiers">
+<div>
+    <x-mary-header title="Fichiers" subtitle="Liste des fichiers" class="text-emerald-700">
         <x-slot:middle class="!justify-end">
-            <x-mary-input icon="o-bolt" placeholder="Recherche..." wire:model.live.debounce.300ms="search"/>
+            <x-mary-input class="bg-emerald-700 text-white placeholder-white border-0" icon="o-bolt" placeholder="Recherche..." wire:model.live.debounce.300ms="search"/>
         </x-slot:middle>
         <x-slot:actions>
-            <x-mary-button icon="o-funnel"/>
-            <x-mary-button icon="o-plus" class="btn-primary" link="/files/new"/>
+            <x-mary-button icon="o-plus" class="bg-emerald-700 text-white border-0" link="/files/new"/>
         </x-slot:actions>
     </x-mary-header>
-    <x-mary-table :headers="$headers" :rows="$files" striped>
+    <x-mary-table :headers="$headers" :rows="$files" class="bg-emerald-700 text-white">
         @scope('cell_name', $file)
         <a href="{{ Storage::url($file->path) }}"
            download
