@@ -24,7 +24,7 @@
         @endscope
         @scope('actions', $file)
         <div class="flex flex-row gap-2">
-            <x-mary-button icon="o-trash" wire:click="delete({{ $file->id }})" spinner class="bg-white text-emerald-700"/>
+            <x-mary-button icon="o-trash" wire:click="delete({{ $file->id }})" spinner class="btn-sm bg-white text-emerald-700"/>
         </div>
         @endscope
     </x-mary-table>
