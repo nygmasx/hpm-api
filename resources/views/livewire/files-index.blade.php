@@ -11,7 +11,7 @@
         @scope('cell_name', $file)
         <a href="{{ Storage::url($file->path) }}"
            download
-           class="text-blue-600 hover:underline"
+           class="text-gray-300 hover:underline"
            @click.stop>
             {{ $file->name }}
         </a>
@@ -24,7 +24,7 @@
         @endscope
         @scope('actions', $file)
         <div class="flex flex-row gap-2">
-            <x-mary-button icon="o-trash" wire:click="delete({{ $file->id }})" spinner class="btn-sm"/>
+            <x-mary-button icon="o-trash" wire:click="delete({{ $file->id }})" spinner class="bg-white text-emerald-700"/>
         </div>
         @endscope
     </x-mary-table>
