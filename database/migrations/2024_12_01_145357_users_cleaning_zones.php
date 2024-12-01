@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cleaning_zones', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+        Schema::create("users_cleaning_zones", function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('cleaning_zone_id')->constrained('cleaning_zones')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cleaning_zones');
+        Schema::dropIfExists("users_cleaning_zones");
     }
 };
