@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('cleaning_plans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('cleaning_task_id')->constrained('cleaning_tasks')->cascadeOnDelete();
             $table->dateTime('date');
             $table->timestamps();
         });

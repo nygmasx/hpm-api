@@ -42,6 +42,7 @@
             <x-mary-menu-item title="Home" icon="o-home" link="/"/>
             <x-mary-menu-item title="Utilisateurs" icon="o-users" link="/users"/>
             <x-mary-menu-item title="Fichiers" icon="s-inbox-arrow-down" link="/files"/>
+            <x-mary-menu-item title="Plan de nettoyage" icon="s-sparkles" link="/cleaning-plans"/>
         </x-mary-menu>
     </x-slot:sidebar>
 

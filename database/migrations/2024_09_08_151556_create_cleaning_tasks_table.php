@@ -14,10 +14,17 @@ return new class extends Migration
         Schema::create('cleaning_tasks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cleaning_station_id')->constrained('cleaning_stations')->cascadeOnDelete();
-            $table->foreignId('cleaning_zone_id')->constrained('cleaning_zones')->cascadeOnDelete();
+            $table->string('title');
             $table->time('estimated_time');
             $table->string('products');
-            $table->string('verification_type')
+            $table->string('products_quantity')->nullable();
+            $table->string('verification_type');
+            $table->string('temperature')->nullable();
+            $table->time('action_time')->nullable();
+            $table->string('utensil')->nullable();
+            $table->string('rinse_type')->nullable();
+            $table->string('drying_type')->nullable();
+            $table->boolean('is_finished')->default(false);
             $table->timestamps();
         });
     }

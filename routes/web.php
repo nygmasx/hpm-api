@@ -20,6 +20,10 @@ Route::get('/files/new', \App\Livewire\FilesCreate::class)
     ->middleware(['auth', 'admin'])
     ->name('files.create');
 
+Route::get('/cleaning-plans', \App\Livewire\CleaningPlanIndex::class)
+    ->middleware(['auth', 'admin'])
+    ->name('cleaning-plans.index');
+
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
