@@ -4,7 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Livewire\UserIndex;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'admin')
+Route::get('/', \App\Livewire\Admin::class)
     ->middleware(['auth', 'admin', 'verified'])
     ->name('admin');
 

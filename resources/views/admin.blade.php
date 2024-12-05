@@ -1,4 +1,4 @@
-<x-app-layout>
+<div class="">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Admin Dashboard') }}
@@ -10,11 +10,27 @@
         <div class="flex gap-4">
             <x-mary-stat
                 title="Utilisateurs"
+                color="text-black"
+                :value="$users"
+                icon="o-users"
+                tooltip="Utilisateurs"
+                class="bg-white text-black h-50"
+            />
+            <x-mary-stat
+                title="Chiffre d'affaires"
+                color="text-white"
+                value="44"
+                icon="o-arrow-trending-up"
+                tooltip="Ventes"
+                class="bg-black text-white"
+            />
+            <x-mary-stat
+                title="Utilisateurs"
                 color="text-white"
                 value="44"
                 icon="o-users"
                 tooltip="Utilisateurs"
-                class="bg-black text-white h-50"
+                class="bg-black text-white"
             />
             <x-mary-stat
                 title="Utilisateurs"
@@ -26,4 +42,4 @@
             />
         </div>
     </div>
-</x-app-layout>
+</div>
