@@ -17,28 +17,28 @@
                 class="bg-white text-black h-50"
             />
             <x-mary-stat
-                title="Chiffre d'affaires"
-                color="text-white"
-                value="44"
-                icon="o-arrow-trending-up"
-                tooltip="Ventes"
-                class="bg-black text-white"
+                title="Utilisateurs"
+                color="text-black"
+                :value="$users"
+                icon="o-users"
+                tooltip="Utilisateurs"
+                class="bg-white text-black h-50"
             />
             <x-mary-stat
                 title="Utilisateurs"
-                color="text-white"
-                value="44"
+                color="text-black"
+                :value="$users"
                 icon="o-users"
                 tooltip="Utilisateurs"
-                class="bg-black text-white"
+                class="bg-white text-black h-50"
             />
             <x-mary-stat
                 title="Utilisateurs"
-                color="text-white"
-                value="44"
+                color="text-black"
+                :value="$users"
                 icon="o-users"
                 tooltip="Utilisateurs"
-                class="bg-black text-white"
+                class="bg-white text-black h-50"
             />
         </div>
     </div>

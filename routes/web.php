@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Subscribe\CreateController;
+use App\Http\Controllers\Subscribe\StoreController;
 use App\Livewire\UserIndex;
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', \App\Livewire\Admin::class)
     ->middleware(['auth', 'admin', 'verified'])
@@ -31,5 +34,17 @@ Route::view('profile', 'profile')
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
+
+Route::middleware(['auth', 'verified'])
+    ->group(function () {
+
+        Route::prefix('subscribe')
+            ->as('subscribe.')
+            ->group(function () {
+                Route::get('create', CreateController::class)->name('create');
+                Route::post('store', StoreController::class)->name('store');
+            });
+
+    });
 
 require __DIR__ . '/auth.php';
