@@ -27,6 +27,10 @@ Route::get('/cleaning-plans', \App\Livewire\CleaningPlanIndex::class)
     ->middleware(['auth', 'admin'])
     ->name('cleaning-plans.index');
 
+Route::get('/cleaning-task/new', \App\Livewire\CleaningTaskCreate::class)
+    ->middleware(['auth', 'admin'])
+    ->name('cleaning-tasks.create');
+
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');

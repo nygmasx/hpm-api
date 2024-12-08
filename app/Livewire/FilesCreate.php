@@ -16,7 +16,6 @@ class FilesCreate extends Component
     {
         return view('livewire.files-create')
             ->layout('layouts.app');
-
     }
 
     public function save()

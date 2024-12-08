@@ -11,8 +11,7 @@ class CleaningZoneFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Zone de nettoyage '. $this->faker->unique()->randomNumber(),
-            'user_id' => User::factory(),
+            'name' => 'Zone de nettoyage ' . $this->faker->unique()->randomNumber(),
         ];
     }
 }

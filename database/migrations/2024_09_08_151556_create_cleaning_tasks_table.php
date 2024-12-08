@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('utensil')->nullable();
             $table->string('rinse_type')->nullable();
             $table->string('drying_type')->nullable();
-            $table->boolean('is_finished')->default(false);
+            $table->string('frequency');
             $table->timestamps();
         });
     }

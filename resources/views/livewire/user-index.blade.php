@@ -10,8 +10,8 @@
     <x-mary-table :headers="$headers" :rows="$users" class="bg-emerald-700 text-white">
         @scope('actions', $user)
         <div class="flex flex-row gap-2">
-            <x-mary-button icon="o-trash" wire:click="delete({{ $user->id }})" spinner class="btn-sm bg-white text-emerald-700"/>
             <x-mary-button icon="o-pencil" wire:click="edit({{ $user->id }})" spinner class="btn-sm bg-white text-emerald-700"/>
+            <x-mary-button icon="o-trash" wire:click="delete({{ $user->id }})" spinner class="btn-sm bg-white text-emerald-700"/>
         </div>
         @endscope
     </x-mary-table>

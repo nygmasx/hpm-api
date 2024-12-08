@@ -1,48 +1,64 @@
 <div>
     <x-mary-header title="Plans de nettoyage" subtitle="Liste des plans" class="text-emerald-700">
         <x-slot:middle class="!justify-end">
-            <x-mary-input class="bg-emerald-700 text-white placeholder-white border-0" icon="o-bolt" placeholder="Recherche..." wire:model.live="search"/>
+            <x-mary-input class="bg-emerald-700 text-white placeholder-white border-0" icon="o-bolt"
+                          placeholder="Recherche..." wire:model.live="search"/>
         </x-slot:middle>
         <x-slot:actions>
-            <x-mary-button icon="o-plus" class="bg-emerald-700 text-white border-0" wire:click="showModal"/>
+            <x-mary-button icon="o-plus" class="bg-emerald-700 text-white border-0" link="/cleaning-task/new"/>
         </x-slot:actions>
     </x-mary-header>
-    <div class="mb-4">
-        <x-mary-stat
-            title="Utilisateurs"
-            color="text-white"
-            value="44"
-            icon="o-users"
-            tooltip="Utilisateurs"
-            class="bg-black text-white"
-        />
+    <div class="mb-4 flex justify-between gap-4">
+        <x-mary-card title="Postes de Nettoyage" class="bg-white text-black w-1/2" separator>
+            <div class="flex justify-between">
+                <div class="space-y-4 w-full">
+                    @foreach($cleaningStations as $cleaningStation )
+                        <div class="flex justify-between w-full">
+                            <div class="w-2/3">
+                                <p class="font-semibold text-xl">{{$cleaningStation->name }}</p>
+                                <p class="text-gray-400 text-sm truncate">{{$cleaningStation->cleaningZone->name }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            <x-slot:menu>
+                <a href="/" wire:navigate>
+                    <x-mary-icon name="o-arrow-right" class="cursor-pointer"/>
+                </a>
+            </x-slot:menu>
+        </x-mary-card>
+        <x-mary-card title="Dernières Tâches Effectuées" class="bg-white text-black w-1/2" separator>
+            <div class="flex justify-between">
+                <div class="space-y-4 w-full">
+                    @foreach($lastCleaningTasks as $lastCleaningTask )
+                        <div class="flex justify-between w-full">
+                            <div class="w-2/3">
+                                <p class="font-semibold text-xl">{{$lastCleaningTask->title }}</p>
+                                <p class="text-gray-400 text-sm truncate">{{$lastCleaningTask->verification_type }}</p>
+                            </div>
+                            <div class="">
+                                <x-mary-badge
+                                    class="bg-emerald-600 text-white font-bold border-none"
+                                    value="{{$lastCleaningTask->estimated_time}} min"
+                                />
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </x-mary-card>
     </div>
-    <x-mary-table :headers="$headers" :rows="$cleaningPlans" class="bg-emerald-700 text-white">
-        @scope('actions', $cleaningPlan)
+    <x-mary-table :headers="$headers" :rows="$cleaningTasks" class="bg-emerald-700 text-white mt-4">
+        @scope('actions', $cleaningTask)
         <div class="flex flex-row gap-2">
-            <x-mary-button icon="o-trash" wire:click="delete({{ $cleaningPlan->id }})" spinner class="btn-sm bg-white text-emerald-700"/>
-            <x-mary-button icon="o-pencil" wire:click="edit({{ $cleaningPlan->id }})" spinner class="btn-sm bg-white text-emerald-700"/>
+            <x-mary-button icon="o-trash" wire:click="delete({{ $cleaningTask->id }})" spinner
+                           class="btn-sm bg-white text-emerald-700"/>
         </div>
         @endscope
     </x-mary-table>
 
     <div class="mt-4">
-        {{ $cleaningPlans->links() }}
+        {{ $cleaningTasks->links() }}
     </div>
-
-    <x-mary-modal wire:model="postModal" class="backdrop-blur" box-class="bg-white">
-        <div class="mb-5">
-            <x-mary-form wire:submit="save">
-                <p class="text-emerald-700 text-center font-bold text-2xl">Ajouter un utilisateur</p>
-                <x-mary-input label="Nom" wire:model="form.name" class="text-white bg-emerald-700"/>
-                <x-mary-input label="Email" wire:model="form.email" type="email" class="text-white bg-emerald-700"/>
-                <x-mary-password label="Mot de passe" wire:model="form.password" right class="text-white bg-emerald-700"/>
-                <x-mary-toggle label="Administrateur" wire:model="form.admin" class="bg-emerald-700"/>
-                <x-slot:actions>
-                    <x-mary-button label="Annuler" class="bg-gray-200 text-emerald-700 border-0" wire:click="$set('postModal', false)"/>
-                    <x-mary-button label="Enregistrer" class="bg-emerald-700 text-white border-0" type="submit" spinner="save"/>
-                </x-slot:actions>
-            </x-mary-form>
-        </div>
-    </x-mary-modal>
 </div>
