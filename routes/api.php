@@ -3,6 +3,7 @@
 use App\Models\AdvancedTracability;
 use App\Models\CleaningPlan;
 use App\Models\CleaningStation;
+use App\Models\CleaningTask;
 use App\Models\CleaningZone;
 use App\Models\Equipment;
 use App\Models\Image;
@@ -333,47 +334,17 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
 });
 
 Route::get('cleaning-zone/{cleaningZone}/user/{user}/cleaning-tasks', function (CleaningZone $cleaningZone, User $user) {
-    $tasks = $cleaningZone->cleaningStations()
-        ->with(['cleaningTasks' => function ($query) use ($user) {
-            $query->with(['users' => function ($q) use ($user) {
-                $q->where('users.id', $user->id);
-            }]);
+    $tasks = CleaningTask::query()
+        ->whereIn('cleaning_station_id', $cleaningZone->cleaningStations->pluck('id'))
+        ->whereHas('users', function ($query) use ($user) {
+            $query->where('users.id', $user->id);
+        })
+        ->with(['cleaningStation', 'users' => function ($query) use ($user) {
+            $query->where('users.id', $user->id);
         }])
-        ->get()
-        ->pluck('cleaningTasks')
-        ->flatten()
-        ->filter(function ($task) {
-            return $task->users->isNotEmpty();
-        })
-        ->map(function ($task) {
-            $pivotData = $task->users->first()->pivot;
+        ->get();
 
-            return [
-                'id' => $task->id,
-                'title' => $task->title,
-                'estimated_time' => $task->estimated_time,
-                'products' => $task->products,
-                'products_quantity' => $task->products_quantity,
-                'verification_type' => $task->verification_type,
-                'temperature' => $task->temperature,
-                'action_time' => $task->action_time,
-                'utensil' => $task->utensil,
-                'rinse_type' => $task->rinse_type,
-                'drying_type' => $task->drying_type,
-                'frequency' => $task->frequency,
-                'is_completed' => $pivotData->is_completed,
-                'completed_at' => $pivotData->updated_at,
-                'cleaning_station' => [
-                    'id' => $task->cleaningStation->id,
-                    'name' => $task->cleaningStation->name
-                ]
-            ];
-        })
-        ->values();
-
-    return response()->json([
-        'tasks' => $tasks
-    ]);
+    return response()->json(['tasks' => $tasks]);
 });
 
 Route::get('user/{user}/cleaning-plans', function (User $user) {
