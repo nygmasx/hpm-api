@@ -333,6 +333,12 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
     ]);
 });
 
+Route::get('user/{user}/cleaning-tasks', function (User $user) {
+    return $user->cleaningTasks()->with(['tasks' => function ($query) {
+        $query->withPivot('is_completed');
+    }]);
+});
+
 Route::get('cleaning-zone/{cleaningZone}/user/{user}/cleaning-tasks', function (CleaningZone $cleaningZone, User $user) {
     $tasks = CleaningTask::query()
         ->whereIn('cleaning_station_id', $cleaningZone->cleaningStations->pluck('id'))
