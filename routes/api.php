@@ -335,15 +335,18 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
 Route::get('cleaning-zone/{cleaningZone}/user/{user}/cleaning-tasks', function (CleaningZone $cleaningZone, User $user) {
     $tasks = $cleaningZone->cleaningStations()
         ->with(['cleaningTasks' => function ($query) use ($user) {
-            $query->whereHas('users', function ($q) use ($user) {
+            $query->with(['users' => function ($q) use ($user) {
                 $q->where('users.id', $user->id);
-            });
+            }]);
         }])
         ->get()
         ->pluck('cleaningTasks')
         ->flatten()
-        ->map(function ($task) use ($user) {
-            $pivotData = $task->users()->where('users.id', $user->id)->first()->pivot;
+        ->filter(function ($task) {
+            return $task->users->isNotEmpty();
+        })
+        ->map(function ($task) {
+            $pivotData = $task->users->first()->pivot;
 
             return [
                 'id' => $task->id,
@@ -365,7 +368,8 @@ Route::get('cleaning-zone/{cleaningZone}/user/{user}/cleaning-tasks', function (
                     'name' => $task->cleaningStation->name
                 ]
             ];
-        });
+        })
+        ->values();
 
     return response()->json([
         'tasks' => $tasks
