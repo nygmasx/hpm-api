@@ -32,4 +32,9 @@ class CleaningTask extends Model
     {
         return $this->belongsToMany(User::class, 'users_cleaning_tasks');
     }
+
+    public function cleaningStation(): BelongsTo
+    {
+        return $this->belongsTo(CleaningStation::class);
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CleaningStation extends Model
 {
@@ -18,5 +19,10 @@ class CleaningStation extends Model
     public function cleaningZone(): BelongsTo
     {
         return $this->belongsTo(CleaningZone::class);
+    }
+
+    public function cleaningTasks(): HasMany
+    {
+        return $this->hasMany(CleaningTask::class);
     }
 }
