@@ -334,9 +334,11 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
 });
 
 Route::get('user/{user}/cleaning-tasks', function (User $user) {
-    return $user->cleaningTasks()->with(['tasks' => function ($query) {
-        $query->withPivot('is_completed');
-    }]);
+    return response()->json([
+        'tasks' => $user->cleaningTasks()
+            ->withPivot('is_completed')
+            ->get()
+    ]);
 });
 
 Route::get('cleaning-zone/{cleaningZone}/user/{user}/cleaning-tasks', function (CleaningZone $cleaningZone, User $user) {
