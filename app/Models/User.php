@@ -117,4 +117,9 @@ class User extends Authenticatable
     {
         return $this->HasMany(File::class);
     }
+
+    public function cleaningTasks(): BelongsToMany
+    {
+        return $this->belongsToMany(CleaningTask::class, 'users_cleaning_tasks', 'user_id', 'cleaning_task_id');
+    }
 }

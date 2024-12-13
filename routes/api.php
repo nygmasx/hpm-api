@@ -332,6 +332,46 @@ Route::middleware('auth:sanctum')->post('/cleaning-plan/new', function (Request 
     ]);
 });
 
+Route::get('{cleaningZone}/cleaning-tasks/{user}', function (CleaningZone $cleaningZone, User $user) {
+    $tasks = $cleaningZone->cleaningStations()
+        ->with(['cleaningTasks' => function ($query) use ($user) {
+            $query->whereHas('users', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
+            });
+        }])
+        ->get()
+        ->pluck('cleaningTasks')
+        ->flatten()
+        ->map(function ($task) use ($user) {
+            $pivotData = $task->users()->where('users.id', $user->id)->first()->pivot;
+
+            return [
+                'id' => $task->id,
+                'title' => $task->title,
+                'estimated_time' => $task->estimated_time,
+                'products' => $task->products,
+                'products_quantity' => $task->products_quantity,
+                'verification_type' => $task->verification_type,
+                'temperature' => $task->temperature,
+                'action_time' => $task->action_time,
+                'utensil' => $task->utensil,
+                'rinse_type' => $task->rinse_type,
+                'drying_type' => $task->drying_type,
+                'frequency' => $task->frequency,
+                'is_completed' => $pivotData->is_completed,
+                'completed_at' => $pivotData->updated_at,
+                'cleaning_station' => [
+                    'id' => $task->cleaningStation->id,
+                    'name' => $task->cleaningStation->name
+                ]
+            ];
+        });
+
+    return response()->json([
+        'tasks' => $tasks
+    ]);
+});
+
 Route::get('user/{user}/cleaning-plans', function (User $user) {
     return $user->cleaningPlans()->with(['zones' => function ($query) {
         $query->withPivot('comment', 'image_url');
@@ -347,7 +387,7 @@ Route::middleware('auth:sanctum')->post('/oil-tray/new', function (Request $requ
         'name' => 'required',
     ]);
 
-    $oilTray = OilTray::create([
+    OilTray::create([
         'user_id' => auth()->id(),
         'name' => $request->name
     ]);
