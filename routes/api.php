@@ -220,20 +220,28 @@ Route::get('user/{user}/temperatures', function (User $user) {
 });
 
 Route::get('user/{user}/cleaning-zones', function (User $user) {
-    return $user->cleaningZones;
-});
-
-Route::middleware('auth:sanctum')->post('/cleaning-zone/new', function (Request $request) {
-    $request->validate([
-        'name' => 'required',
-    ]);
-
-    CleaningZone::create([
-        'user_id' => auth()->id(),
-        'name' => $request->name,
-    ]);
-
-    return response()->json(['message' => 'Cleaning Zone created successfully.']);
+    return $user->cleaningZones()
+        ->withCount(['cleaningTasks as tasks' => function($query) use ($user) {
+            $query->whereNull('completed_at')
+                ->whereExists(function($subquery) use ($user) {
+                    $subquery->select('id')
+                        ->from('users_cleaning_tasks')
+                        ->whereColumn('cleaning_tasks.id', 'users_cleaning_tasks.cleaning_task_id')
+                        ->where('users_cleaning_tasks.user_id', $user->id);
+                });
+        }])
+        ->with(['cleaningStations' => function($query) {
+            $query->select('id', 'cleaning_zone_id', 'name');
+        }])
+        ->get()
+        ->map(function($zone) {
+            return [
+                'id' => $zone->id,
+                'title' => $zone->name,
+                'tasks' => $zone->tasks,
+                'stations' => $zone->cleaningStations
+            ];
+        });
 });
 
 Route::get('cleaning-zone/{cleaningZone}/cleaning-station', function (CleaningZone $cleaningZone) {
