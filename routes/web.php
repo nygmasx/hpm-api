@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Subscribe\CreateController;
 use App\Http\Controllers\Subscribe\StoreController;
 use App\Livewire\UserIndex;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
@@ -38,6 +39,13 @@ Route::view('profile', 'profile')
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
+
+Route::get('/check-icons', function () {
+    $components = collect(Blade::getClassComponentAliases());
+    return $components->filter(function($class, $alias) {
+        return str_contains($alias, 'heroicon');
+    })->keys();
+});
 
 Route::middleware(['auth', 'verified'])
     ->group(function () {

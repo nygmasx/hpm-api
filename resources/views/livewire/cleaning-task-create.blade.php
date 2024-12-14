@@ -24,7 +24,6 @@
                 color="emerald"
                 class="bg-emerald-700 text-white"
             />
-
             <x-mary-input label="Titre" wire:model="form.title" class="bg-emerald-700 text-white"/>
             <x-mary-input label="Fréquence" wire:model="form.frequency" class="bg-emerald-700 text-white"/>
             <x-mary-input type="time" label="Temps estimé (minute)" wire:model="form.estimated_time" class="bg-emerald-700 text-white"/>

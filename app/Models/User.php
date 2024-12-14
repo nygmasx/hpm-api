@@ -83,9 +83,9 @@ class User extends Authenticatable
         return $this->hasMany(TemperatureChangement::class);
     }
 
-    public function cleaningZones(): HasMany
+    public function cleaningZones(): BelongsToMany
     {
-        return $this->hasMany(CleaningZone::class);
+        return $this->belongsToMany(CleaningZone::class, 'users_cleaning_zones', 'user_id', 'cleaning_zone_id');
     }
 
     public function cleaningPlans(): HasMany
