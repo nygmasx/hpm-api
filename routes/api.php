@@ -225,7 +225,7 @@ Route::get('user/{user}/cleaning-zones', function (User $user) {
         ->get()
         ->map(function($zone) use ($user) {
             $taskCount = $user->cleaningTasks()
-                ->whereNull('completed_at')
+                ->where('is_finished', false)
                 ->where('cleaning_zone_id', $zone->id)
                 ->count();
 
