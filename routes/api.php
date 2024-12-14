@@ -221,24 +221,18 @@ Route::get('user/{user}/temperatures', function (User $user) {
 
 Route::get('user/{user}/cleaning-zones', function (User $user) {
     return $user->cleaningZones()
-        ->withCount(['cleaningTasks as tasks' => function($query) use ($user) {
-            $query->whereNull('completed_at')
-                ->whereExists(function($subquery) use ($user) {
-                    $subquery->select('id')
-                        ->from('users_cleaning_tasks')
-                        ->whereColumn('cleaning_tasks.id', 'users_cleaning_tasks.cleaning_task_id')
-                        ->where('users_cleaning_tasks.user_id', $user->id);
-                });
-        }])
-        ->with(['cleaningStations' => function($query) {
-            $query->select('id', 'cleaning_zone_id', 'name');
-        }])
+        ->with(['cleaningStations:id,cleaning_zone_id,name'])
         ->get()
-        ->map(function($zone) {
+        ->map(function($zone) use ($user) {
+            $taskCount = $user->cleaningTasks()
+                ->whereNull('completed_at')
+                ->where('cleaning_zone_id', $zone->id)
+                ->count();
+
             return [
                 'id' => $zone->id,
                 'title' => $zone->name,
-                'tasks' => $zone->tasks,
+                'tasks' => $taskCount,
                 'stations' => $zone->cleaningStations
             ];
         });
