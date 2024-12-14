@@ -220,27 +220,45 @@ Route::get('user/{user}/temperatures', function (User $user) {
 });
 
 Route::get('user/{user}/cleaning-zones', function (User $user) {
+    // First, let's log some basic counts
+    \Log::info('Debugging Cleaning Zones', [
+        'user_id' => $user->id,
+        'zones_count' => $user->cleaningZones()->count(),
+        'tasks_count' => $user->cleaningTasks()->count(),
+    ]);
+
     return $user->cleaningZones()
-        ->select('cleaning_zones.id', 'cleaning_zones.name as title')
         ->with(['cleaningStations' => function($query) {
             $query->select('id', 'name', 'cleaning_zone_id');
         }])
-        ->withCount([
-            'cleaningStations as tasks' => function($query) use ($user) {
-                $query->whereHas('cleaningTasks', function($q) use ($user) {
-                    $q->whereHas('users', function($uq) use ($user) {
-                        $uq->where('users.id', $user->id)
-                            ->where('users_cleaning_tasks.is_completed', false);
-                    });
-                });
-            }
-        ])
         ->get()
-        ->map(function($zone) {
+        ->map(function($zone) use ($user) {
+            // Get station IDs for this zone
+            $stationIds = $zone->cleaningStations->pluck('id');
+
+            // Log station information
+            \Log::info("Zone {$zone->id} stations", [
+                'station_ids' => $stationIds,
+                'station_count' => $stationIds->count()
+            ]);
+
+            // Count tasks directly through the pivot table
+            $taskCount = \DB::table('cleaning_tasks')
+                ->join('users_cleaning_tasks', 'cleaning_tasks.id', '=', 'users_cleaning_tasks.cleaning_task_id')
+                ->where('users_cleaning_tasks.user_id', $user->id)
+                ->where('users_cleaning_tasks.is_completed', false)
+                ->whereIn('cleaning_tasks.cleaning_station_id', $stationIds)
+                ->count();
+
+            // Log task count
+            \Log::info("Zone {$zone->id} tasks", [
+                'task_count' => $taskCount
+            ]);
+
             return [
                 'id' => $zone->id,
-                'title' => $zone->title,
-                'tasks' => $zone->tasks,
+                'title' => $zone->name,
+                'tasks' => $taskCount,
                 'stations' => $zone->cleaningStations
             ];
         });
