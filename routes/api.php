@@ -221,22 +221,26 @@ Route::get('user/{user}/temperatures', function (User $user) {
 
 Route::get('user/{user}/cleaning-zones', function (User $user) {
     return $user->cleaningZones()
-        ->with(['cleaningStations'])
+        ->select('cleaning_zones.id', 'cleaning_zones.name as title')
+        ->with(['cleaningStations' => function($query) {
+            $query->select('id', 'name', 'cleaning_zone_id');
+        }])
+        ->withCount([
+            'cleaningStations as tasks' => function($query) use ($user) {
+                $query->whereHas('cleaningTasks', function($q) use ($user) {
+                    $q->whereHas('users', function($uq) use ($user) {
+                        $uq->where('users.id', $user->id)
+                            ->where('users_cleaning_tasks.is_completed', false);
+                    });
+                });
+            }
+        ])
         ->get()
-        ->map(function($zone) use ($user) {
-            $stationIds = $zone->cleaningStations->pluck('id');
-
-            $taskCount = $user->cleaningTasks()
-                ->whereHas('cleaningStation', function($query) use ($stationIds) {
-                    $query->whereIn('id', $stationIds);
-                })
-                ->wherePivot('is_completed', false)
-                ->count();
-
+        ->map(function($zone) {
             return [
                 'id' => $zone->id,
-                'title' => $zone->name,
-                'tasks' => $taskCount,
+                'title' => $zone->title,
+                'tasks' => $zone->tasks,
                 'stations' => $zone->cleaningStations
             ];
         });

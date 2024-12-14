@@ -30,7 +30,9 @@ class CleaningTask extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'users_cleaning_tasks');
+        return $this->belongsToMany(User::class, 'users_cleaning_tasks')
+            ->withPivot('is_completed')
+            ->withTimestamps();
     }
 
     public function cleaningStation(): BelongsTo
