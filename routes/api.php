@@ -221,12 +221,16 @@ Route::get('user/{user}/temperatures', function (User $user) {
 
 Route::get('user/{user}/cleaning-zones', function (User $user) {
     return $user->cleaningZones()
-        ->with(['cleaningStations:id,cleaning_zone_id,name'])
+        ->with(['cleaningStations'])
         ->get()
         ->map(function($zone) use ($user) {
+            $stationIds = $zone->cleaningStations->pluck('id');
+
             $taskCount = $user->cleaningTasks()
-                ->where('is_completed', false)
-                ->where('cleaning_zone_id', $zone->id)
+                ->whereHas('cleaningStation', function($query) use ($stationIds) {
+                    $query->whereIn('id', $stationIds);
+                })
+                ->wherePivot('is_completed', false)
                 ->count();
 
             return [
