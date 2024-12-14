@@ -13,17 +13,11 @@ use App\Models\StripeProduct;
 use App\Models\Supplier;
 use App\Models\Tracability;
 use App\Models\User;
-
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Database\Factories\SupplierFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         // Clear existing data
@@ -31,8 +25,9 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->delete();
         DB::table('users_cleaning_zones')->delete();
         DB::table('users_cleaning_tasks')->delete();
-        DB::table('cleaning_zones')->delete();
         DB::table('cleaning_tasks')->delete();
+        DB::table('cleaning_stations')->delete();
+        DB::table('cleaning_zones')->delete();
 
         // Create admin user
         $admin = User::factory()->create([
@@ -47,8 +42,25 @@ class DatabaseSeeder extends Seeder
         // Create cleaning zones
         $zones = CleaningZone::factory(4)->create();
 
-        // Create cleaning tasks
-        $tasks = CleaningTask::factory(10)->create();
+        // Create cleaning stations for each zone
+        $stations = [];
+        foreach ($zones as $zone) {
+            // Create 2-3 stations per zone
+            $zoneStations = CleaningStation::factory(rand(2, 3))->create([
+                'cleaning_zone_id' => $zone->id
+            ]);
+            $stations = array_merge($stations, $zoneStations->all());
+        }
+
+        // Create cleaning tasks for stations
+        $tasks = [];
+        foreach ($stations as $station) {
+            // Create 2-4 tasks per station
+            $stationTasks = CleaningTask::factory(rand(2, 4))->create([
+                'cleaning_station_id' => $station->id
+            ]);
+            $tasks = array_merge($tasks, $stationTasks->all());
+        }
 
         // Get all users
         $allUsers = User::all();
@@ -67,7 +79,7 @@ class DatabaseSeeder extends Seeder
 
         // Assign all tasks to all users
         $allUsers->each(function ($user) use ($tasks) {
-            $tasks->each(function ($task) use ($user) {
+            collect($tasks)->each(function ($task) use ($user) {
                 DB::table('users_cleaning_tasks')->insert([
                     'user_id' => $user->id,
                     'cleaning_task_id' => $task->id,
