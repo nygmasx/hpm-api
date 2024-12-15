@@ -238,66 +238,77 @@ Route::get('user/{user}/cleaning-zones', function (User $user) {
         });
 });
 
-Route::get('cleaning-zone/{zone}/tasks', function (CleaningZone $zone) {
+// In your routes/api.php
+Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function (CleaningZone $zone) {
     try {
-        // Log the zone ID and related data
-        \Log::info('Fetching tasks for zone', [
-            'zone_id' => $zone->id,
-            'stations_count' => $zone->cleaningStations()->count()
+        // Validate that the zone exists
+        if (!$zone) {
+            return response()->json([
+                'error' => 'Zone non trouvée'
+            ], 404);
+        }
+
+        // Get authenticated user
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json([
+                'error' => 'Utilisateur non authentifié'
+            ], 401);
+        }
+
+        // Log debugging info
+        \Log::info('Fetching tasks', [
+            'user_id' => $user->id,
+            'zone_id' => $zone->id
         ]);
 
-        $user = auth()->user();
-        \Log::info('User context', ['user_id' => $user ? $user->id : null]);
-
-        $tasks = $zone->cleaningStations()
+        // Get stations and their tasks
+        $stations = $zone->cleaningStations()
             ->with(['cleaningTasks' => function($query) use ($user) {
-                $query->with(['users' => function($q) use ($user) {
-                    $q->where('users.id', $user->id)
-                        ->select('users.id', 'users_cleaning_tasks.is_completed');
-                }]);
-            }])
-            ->get()
-            ->flatMap(function($station) use ($user) {
-                \Log::info('Processing station', [
-                    'station_id' => $station->id,
-                    'tasks_count' => $station->cleaningTasks->count()
-                ]);
-
-                return $station->cleaningTasks->map(function($task) use ($station, $user) {
-                    $userTask = $task->users->first();
-                    return [
-                        'id' => $task->id,
-                        'station_id' => $station->id,
-                        'station_name' => $station->name,
-                        'title' => $task->title,
-                        'estimated_time' => $task->estimated_time,
-                        'frequency' => $task->frequency,
-                        'products' => $task->products,
-                        'products_quantity' => $task->products_quantity,
-                        'verification_type' => $task->verification_type,
-                        'temperature' => $task->temperature,
-                        'action_time' => $task->action_time,
-                        'utensil' => $task->utensil,
-                        'rinse_type' => $task->rinse_type,
-                        'drying_type' => $task->drying_type,
-                        'is_completed' => $userTask ? $userTask->pivot->is_completed : false
-                    ];
+                $query->whereHas('users', function($q) use ($user) {
+                    $q->where('users.id', $user->id);
                 });
-            })
-            ->values();
+            }])
+            ->get();
+
+        // Transform data
+        $tasks = $stations->flatMap(function($station) use ($user) {
+            return $station->cleaningTasks->map(function($task) use ($station, $user) {
+                $userPivot = $task->users->where('id', $user->id)->first();
+
+                return [
+                    'id' => $task->id,
+                    'station_id' => $station->id,
+                    'station_name' => $station->name,
+                    'title' => $task->title,
+                    'estimated_time' => $task->estimated_time,
+                    'frequency' => $task->frequency,
+                    'products' => $task->products,
+                    'products_quantity' => $task->products_quantity,
+                    'verification_type' => $task->verification_type,
+                    'temperature' => $task->temperature,
+                    'action_time' => $task->action_time,
+                    'utensil' => $task->utensil,
+                    'rinse_type' => $task->rinse_type,
+                    'drying_type' => $task->drying_type,
+                    'is_completed' => $userPivot ? $userPivot->pivot->is_completed : false
+                ];
+            });
+        })->values();
 
         return response()->json($tasks);
 
     } catch (\Exception $e) {
-        \Log::error('Error in cleaning zone tasks route', [
-            'zone_id' => $zone->id,
+        \Log::error('Error fetching tasks', [
             'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
             'trace' => $e->getTraceAsString()
         ]);
 
         return response()->json([
             'error' => 'Une erreur est survenue lors de la récupération des tâches',
-            'details' => $e->getMessage()
+            'message' => $e->getMessage()
         ], 500);
     }
 });
