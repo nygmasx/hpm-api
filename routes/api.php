@@ -238,48 +238,22 @@ Route::get('user/{user}/cleaning-zones', function (User $user) {
         });
 });
 
-// In your routes/api.php
 Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function (CleaningZone $zone) {
     try {
-        // Validate that the zone exists
-        if (!$zone) {
-            return response()->json([
-                'error' => 'Zone non trouvée'
-            ], 404);
-        }
-
-        // Get authenticated user
         $user = auth()->user();
-        if (!$user) {
-            return response()->json([
-                'error' => 'Utilisateur non authentifié'
-            ], 401);
-        }
 
-        // Log debugging info
-        \Log::info('Fetching tasks', [
-            'user_id' => $user->id,
-            'zone_id' => $zone->id
-        ]);
-
-        // Get stations and their tasks
-        $stations = $zone->cleaningStations()
-            ->with(['cleaningTasks' => function($query) use ($user) {
-                $query->whereHas('users', function($q) use ($user) {
-                    $q->where('users.id', $user->id);
-                });
-            }])
-            ->get();
-
-        // Transform data
-        $tasks = $stations->flatMap(function($station) use ($user) {
-            return $station->cleaningTasks->map(function($task) use ($station, $user) {
-                $userPivot = $task->users->where('id', $user->id)->first();
-
+        // Récupérer les tâches de l'utilisateur pour cette zone
+        $userTasks = $user->cleaningTasks()
+            ->whereHas('cleaningStation', function($query) use ($zone) {
+                $query->where('cleaning_zone_id', $zone->id);
+            })
+            ->with('cleaningStation')
+            ->get()
+            ->map(function($task) {
                 return [
                     'id' => $task->id,
-                    'station_id' => $station->id,
-                    'station_name' => $station->name,
+                    'station_id' => $task->cleaningStation->id,
+                    'station_name' => $task->cleaningStation->name,
                     'title' => $task->title,
                     'estimated_time' => $task->estimated_time,
                     'frequency' => $task->frequency,
@@ -291,19 +265,17 @@ Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function 
                     'utensil' => $task->utensil,
                     'rinse_type' => $task->rinse_type,
                     'drying_type' => $task->drying_type,
-                    'is_completed' => $userPivot ? $userPivot->pivot->is_completed : false
+                    'is_completed' => $task->pivot->is_completed
                 ];
             });
-        })->values();
 
-        return response()->json($tasks);
+        return response()->json($userTasks);
 
     } catch (\Exception $e) {
-        \Log::error('Error fetching tasks', [
+        \Log::error('Error fetching user tasks', [
             'error' => $e->getMessage(),
             'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
+            'line' => $e->getLine()
         ]);
 
         return response()->json([
