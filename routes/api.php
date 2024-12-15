@@ -238,6 +238,43 @@ Route::get('user/{user}/cleaning-zones', function (User $user) {
         });
 });
 
+Route::get('cleaning-zone/{zone}/tasks', function (CleaningZone $zone) {
+    // On récupère l'utilisateur authentifié
+    $user = auth()->user();
+
+    return $zone->cleaningStations()
+        ->with(['cleaningTasks' => function($query) use ($user) {
+            $query->with(['users' => function($q) use ($user) {
+                $q->where('users.id', $user->id)
+                    ->select('users.id', 'is_completed');
+            }]);
+        }])
+        ->get()
+        ->flatMap(function($station) use ($user) {
+            return $station->cleaningTasks->map(function($task) use ($station, $user) {
+                $userTask = $task->users->first();
+                return [
+                    'id' => $task->id,
+                    'station_id' => $station->id,
+                    'station_name' => $station->name,
+                    'title' => $task->title,
+                    'estimated_time' => $task->estimated_time,
+                    'frequency' => $task->frequency,
+                    'products' => $task->products,
+                    'products_quantity' => $task->products_quantity,
+                    'verification_type' => $task->verification_type,
+                    'temperature' => $task->temperature,
+                    'action_time' => $task->action_time,
+                    'utensil' => $task->utensil,
+                    'rinse_type' => $task->rinse_type,
+                    'drying_type' => $task->drying_type,
+                    'is_completed' => $userTask ? $userTask->pivot->is_completed : false
+                ];
+            });
+        })
+        ->values();
+});
+
 Route::get('cleaning-zone/{cleaningZone}/cleaning-station', function (CleaningZone $cleaningZone) {
     return $cleaningZone->cleaningStations;
 });
