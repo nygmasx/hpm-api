@@ -246,26 +246,28 @@ Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function 
     try {
         $user = $request->user();
 
-        // Récupérer les tâches de l'utilisateur pour cette zone
-        $userTasks = $user->cleaningTasks()
-            ->whereHas('cleaningStation', function ($query) use ($zone) {
-                $query->where('cleaning_zone_id', $zone->id);
+        $tasks = CleaningTask::whereHas('cleaningStation', function ($query) use ($zone) {
+            $query->where('cleaning_zone_id', $zone->id);
+        })
+            ->with(['cleaningStation'])
+            ->leftJoin('users_cleaning_tasks', function ($join) use ($user) {
+                $join->on('cleaning_tasks.id', '=', 'users_cleaning_tasks.cleaning_task_id')
+                    ->where('users_cleaning_tasks.user_id', '=', $user->id);
             })
-            ->with('cleaningStation')
+            ->select('cleaning_tasks.*', 'users_cleaning_tasks.is_completed')
             ->get();
 
-        return response()->json($userTasks);
+        return response()->json($tasks);
 
     } catch (\Exception $e) {
-        \Log::error('Error fetching user tasks', [
+        \Log::error('Error fetching tasks', [
             'error' => $e->getMessage(),
             'file' => $e->getFile(),
             'line' => $e->getLine()
         ]);
 
         return response()->json([
-            'error' => 'Une erreur est survenue lors de la récupération des tâches',
-            'message' => $e->getMessage()
+            'error' => 'Une erreur est survenue lors de la récupération des tâches'
         ], 500);
     }
 });
