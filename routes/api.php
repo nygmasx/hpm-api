@@ -274,27 +274,32 @@ Route::middleware(['auth:sanctum'])->put('cleaning-tasks/{task}/complete', funct
     try {
         $user = $request->user();
 
-        $cleaningTask = CleaningTask::where('id', $task)
-            ->whereHas('cleaningStation.cleaningZone.users', function($query) use ($user) {
-                $query->where('users.id', $user->id);
-            })
+        // Récupérer ou créer l'entrée dans la table pivot
+        $userTask = DB::table('users_cleaning_tasks')
+            ->where('user_id', $user->id)
+            ->where('cleaning_task_id', $task)
             ->first();
 
-        if (!$cleaningTask) {
-            return response()->json([
-                'error' => 'Tâche non trouvée ou non autorisée'
-            ], 404);
+        if (!$userTask) {
+            DB::table('users_cleaning_tasks')->insert([
+                'user_id' => $user->id,
+                'cleaning_task_id' => $task,
+                'is_completed' => true,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        } else {
+            DB::table('users_cleaning_tasks')
+                ->where('user_id', $user->id)
+                ->where('cleaning_task_id', $task)
+                ->update([
+                    'is_completed' => true,
+                    'updated_at' => now()
+                ]);
         }
 
-        $cleaningTask->update([
-            'is_completed' => true,
-            'completed_at' => now(),
-            'completed_by_user_id' => $user->id
-        ]);
-
         return response()->json([
-            'message' => 'Tâche marquée comme terminée',
-            'task' => $cleaningTask
+            'message' => 'Tâche complétée avec succès'
         ]);
 
     } catch (\Exception $e) {
