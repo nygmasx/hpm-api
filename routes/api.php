@@ -270,32 +270,47 @@ Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function 
     }
 });
 
-Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function (CleaningZone $zone, Request $request) {
+Route::middleware(['auth:sanctum'])->put('cleaning-tasks/{task}/complete', function (Request $request, $task) {
     try {
         $user = $request->user();
 
-        $tasks = CleaningTask::whereHas('cleaningStation', function ($query) use ($zone) {
-            $query->where('cleaning_zone_id', $zone->id);
-        })
-            ->with(['cleaningStation'])
-            ->leftJoin('users_cleaning_tasks', function ($join) use ($user) {
-                $join->on('cleaning_tasks.id', '=', 'users_cleaning_tasks.cleaning_task_id')
-                    ->where('users_cleaning_tasks.user_id', '=', $user->id);
-            })
-            ->select('cleaning_tasks.*', 'users_cleaning_tasks.is_completed')
-            ->get();
+        // Récupérer ou créer l'entrée dans la table pivot
+        $userTask = DB::table('users_cleaning_tasks')
+            ->where('user_id', $user->id)
+            ->where('cleaning_task_id', $task)
+            ->first();
 
-        return response()->json($tasks);
+        if (!$userTask) {
+            DB::table('users_cleaning_tasks')->insert([
+                'user_id' => $user->id,
+                'cleaning_task_id' => $task,
+                'is_completed' => true,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        } else {
+            DB::table('users_cleaning_tasks')
+                ->where('user_id', $user->id)
+                ->where('cleaning_task_id', $task)
+                ->update([
+                    'is_completed' => true,
+                    'updated_at' => now()
+                ]);
+        }
+
+        return response()->json([
+            'message' => 'Tâche complétée avec succès'
+        ]);
 
     } catch (\Exception $e) {
-        \Log::error('Error fetching tasks', [
+        \Log::error('Error completing task', [
             'error' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine()
+            'task_id' => $task,
+            'user_id' => $user->id
         ]);
 
         return response()->json([
-            'error' => 'Une erreur est survenue lors de la récupération des tâches'
+            'error' => 'Une erreur est survenue lors de la mise à jour de la tâche'
         ], 500);
     }
 });
