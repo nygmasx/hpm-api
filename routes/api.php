@@ -27,6 +27,10 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware('auth:sanctum')->get('/check-token', function (Request $request) {
+    return response()->json(['status' => 'valid']);
+});
+
 Route::get('user/{user}/products', function (User $user) {
     return $user->products;
 });
