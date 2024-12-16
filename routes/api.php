@@ -221,14 +221,14 @@ Route::get('user/{user}/temperatures', function (User $user) {
 
 Route::get('user/{user}/cleaning-zones', function (User $user) {
     return $user->cleaningZones()
-        ->with(['cleaningStations.cleaningTasks' => function($query) use ($user) {
-            $query->whereHas('users', function($q) use ($user) {
+        ->with(['cleaningStations.cleaningTasks' => function ($query) use ($user) {
+            $query->whereHas('users', function ($q) use ($user) {
                 $q->where('users.id', $user->id)
                     ->where('users_cleaning_tasks.is_completed', false);
             });
         }])
         ->get()
-        ->map(function($zone) {
+        ->map(function ($zone) {
             return [
                 'id' => $zone->id,
                 'title' => $zone->name,
@@ -238,36 +238,17 @@ Route::get('user/{user}/cleaning-zones', function (User $user) {
         });
 });
 
-Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function (CleaningZone $zone) {
+Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function (CleaningZone $zone, Request $request) {
     try {
-        $user = auth()->user();
+        $user = $request->user();
 
         // Récupérer les tâches de l'utilisateur pour cette zone
         $userTasks = $user->cleaningTasks()
-            ->whereHas('cleaningStation', function($query) use ($zone) {
+            ->whereHas('cleaningStation', function ($query) use ($zone) {
                 $query->where('cleaning_zone_id', $zone->id);
             })
             ->with('cleaningStation')
-            ->get()
-            ->map(function($task) {
-                return [
-                    'id' => $task->id,
-                    'station_id' => $task->cleaningStation->id,
-                    'station_name' => $task->cleaningStation->name,
-                    'title' => $task->title,
-                    'estimated_time' => $task->estimated_time,
-                    'frequency' => $task->frequency,
-                    'products' => $task->products,
-                    'products_quantity' => $task->products_quantity,
-                    'verification_type' => $task->verification_type,
-                    'temperature' => $task->temperature,
-                    'action_time' => $task->action_time,
-                    'utensil' => $task->utensil,
-                    'rinse_type' => $task->rinse_type,
-                    'drying_type' => $task->drying_type,
-                    'is_completed' => $task->pivot->is_completed
-                ];
-            });
+            ->get();
 
         return response()->json($userTasks);
 
