@@ -270,6 +270,46 @@ Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function 
     }
 });
 
+Route::middleware(['auth:sanctum'])->put('cleaning-tasks/{task}/complete', function (Request $request, $task) {
+    try {
+        $user = $request->user();
+
+        $cleaningTask = CleaningTask::where('id', $task)
+            ->whereHas('cleaningStation.cleaningZone.users', function($query) use ($user) {
+                $query->where('users.id', $user->id);
+            })
+            ->first();
+
+        if (!$cleaningTask) {
+            return response()->json([
+                'error' => 'Tâche non trouvée ou non autorisée'
+            ], 404);
+        }
+
+        $cleaningTask->update([
+            'is_completed' => true,
+            'completed_at' => now(),
+            'completed_by_user_id' => $user->id
+        ]);
+
+        return response()->json([
+            'message' => 'Tâche marquée comme terminée',
+            'task' => $cleaningTask
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Error completing task', [
+            'error' => $e->getMessage(),
+            'task_id' => $task,
+            'user_id' => $user->id
+        ]);
+
+        return response()->json([
+            'error' => 'Une erreur est survenue lors de la mise à jour de la tâche'
+        ], 500);
+    }
+});
+
 Route::get('cleaning-zone/{cleaningZone}/cleaning-station', function (CleaningZone $cleaningZone) {
     return $cleaningZone->cleaningStations;
 });
@@ -373,20 +413,6 @@ Route::get('user/{user}/cleaning-tasks', function (User $user) {
             ->withPivot('is_completed')
             ->get()
     ]);
-});
-
-Route::get('cleaning-zone/{cleaningZone}/user/{user}/cleaning-tasks', function (CleaningZone $cleaningZone, User $user) {
-    $tasks = CleaningTask::query()
-        ->whereIn('cleaning_station_id', $cleaningZone->cleaningStations->pluck('id'))
-        ->whereHas('users', function ($query) use ($user) {
-            $query->where('users.id', $user->id);
-        })
-        ->with(['cleaningStation', 'users' => function ($query) use ($user) {
-            $query->where('users.id', $user->id);
-        }])
-        ->get();
-
-    return response()->json(['tasks' => $tasks]);
 });
 
 Route::get('user/{user}/cleaning-plans', function (User $user) {
