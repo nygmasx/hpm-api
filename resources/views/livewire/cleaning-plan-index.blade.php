@@ -23,7 +23,7 @@
                 </div>
             </div>
             <x-slot:menu>
-                <a href="/" wire:navigate>
+                <a href="/cleaning-stations" wire:navigate>
                     <x-mary-icon name="o-arrow-right" class="cursor-pointer"/>
                 </a>
             </x-slot:menu>
