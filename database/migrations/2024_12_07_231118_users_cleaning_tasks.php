@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('cleaning_task_id')->constrained('cleaning_tasks')->cascadeOnDelete();
             $table->boolean("is_completed")->default(false);
+            $table->date("last_completed_at")->nullable();
             $table->timestamps();
         });
     }

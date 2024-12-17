@@ -16,6 +16,7 @@ use App\Models\Temperature;
 use App\Models\TemperatureChangement;
 use App\Models\Tracability;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -245,6 +246,7 @@ Route::get('user/{user}/cleaning-zones', function (User $user) {
 Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function (CleaningZone $zone, Request $request) {
     try {
         $user = $request->user();
+        $today = now()->startOfDay();
 
         $tasks = CleaningTask::whereHas('cleaningStation', function ($query) use ($zone) {
             $query->where('cleaning_zone_id', $zone->id);
@@ -254,8 +256,14 @@ Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function 
                 $join->on('cleaning_tasks.id', '=', 'users_cleaning_tasks.cleaning_task_id')
                     ->where('users_cleaning_tasks.user_id', '=', $user->id);
             })
-            ->select('cleaning_tasks.*', 'users_cleaning_tasks.is_completed')
-            ->get();
+            ->select('cleaning_tasks.*', 'users_cleaning_tasks.is_completed', 'users_cleaning_tasks.last_completed_at')
+            ->get()
+            ->map(function ($task) use ($today) {
+                // La tâche est considérée comme non complétée si elle n'a pas été faite aujourd'hui
+                $lastCompleted = $task->last_completed_at ? Carbon::parse($task->last_completed_at) : null;
+                $task->is_completed = $lastCompleted && $lastCompleted->startOfDay()->eq($today);
+                return $task;
+            });
 
         return response()->json($tasks);
 
@@ -271,7 +279,6 @@ Route::middleware(['auth:sanctum'])->get('cleaning-zone/{zone}/tasks', function 
         ], 500);
     }
 });
-
 Route::middleware(['auth:sanctum'])->put('cleaning-tasks/{task}/complete', function (Request $request, $task) {
     try {
         $user = $request->user();
@@ -288,7 +295,8 @@ Route::middleware(['auth:sanctum'])->put('cleaning-tasks/{task}/complete', funct
                 'cleaning_task_id' => $task,
                 'is_completed' => true,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
+                'last_completed_at' => now(),
             ]);
         } else {
             DB::table('users_cleaning_tasks')
@@ -296,7 +304,9 @@ Route::middleware(['auth:sanctum'])->put('cleaning-tasks/{task}/complete', funct
                 ->where('cleaning_task_id', $task)
                 ->update([
                     'is_completed' => true,
-                    'updated_at' => now()
+                    'updated_at' => now(),
+                    'last_completed_at' => now(),
+
                 ]);
         }
 
