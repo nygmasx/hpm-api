@@ -5,7 +5,7 @@
                           placeholder="Recherche..." wire:model.live="search"/>
         </x-slot:middle>
         <x-slot:actions>
-            <x-mary-button icon="o-plus" class="bg-emerald-700 text-white border-0" link="/cleaning-task/new"/>
+            <x-mary-button icon="o-plus" class="bg-emerald-700 text-white border-0" link="/cleaning-station/new"/>
         </x-slot:actions>
     </x-mary-header>
     <x-mary-table :headers="$headers" :rows="$cleaningStations" class="bg-emerald-700 text-white mt-4">

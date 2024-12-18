@@ -36,6 +36,10 @@ Route::get('/cleaning-stations', \App\Livewire\CleaningStationsIndex::class)
     ->middleware(['auth', 'admin'])
     ->name('cleaning-stations.index');
 
+Route::get('/cleaning-station/new', \App\Livewire\CleaningStationsCreate::class)
+    ->middleware(['auth', 'admin'])
+    ->name('cleaning-station.create');
+
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');

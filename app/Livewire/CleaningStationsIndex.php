@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\CleaningStation;
+use App\Models\CleaningTask;
 use Livewire\Component;
 
 class CleaningStationsIndex extends Component
@@ -29,5 +30,10 @@ class CleaningStationsIndex extends Component
 
         return view('livewire.cleaning-stations-index', compact(['cleaningStations'], 'headers'))
             ->layout('layouts.app');
+    }
+
+    public function delete($id)
+    {
+        CleaningStation::find($id)->delete();
     }
 }
