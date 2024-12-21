@@ -40,6 +40,14 @@ Route::get('/cleaning-station/new', \App\Livewire\CleaningStationsCreate::class)
     ->middleware(['auth', 'admin'])
     ->name('cleaning-station.create');
 
+Route::get('/cleaning-zones', \App\Livewire\CleaningZoneIndex::class)
+    ->middleware(['auth', 'admin'])
+    ->name('cleaning-zones.index');
+
+Route::get('/cleaning-zone/new', \App\Livewire\CleaningZoneCreate::class)
+    ->middleware(['auth', 'admin'])
+    ->name('cleaning-zone.create');
+
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');

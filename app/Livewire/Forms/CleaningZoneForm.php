@@ -23,12 +23,10 @@ class CleaningZoneForm extends Form
     {
         $this->validate();
 
-        // Créer la zone de nettoyage
         $zone = CleaningZone::create([
             'name' => $this->name
         ]);
 
-        // Récupérer tous les utilisateurs et créer les entrées dans la table pivot
         User::chunk(100, function($users) use ($zone) {
             $pivotData = $users->map(function($user) use ($zone) {
                 return [
@@ -39,7 +37,7 @@ class CleaningZoneForm extends Form
                 ];
             })->toArray();
 
-            $zone->users()->attach($pivotData);
+            $zone->user()->attach($pivotData);
         });
 
         $this->reset();

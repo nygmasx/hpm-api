@@ -8,7 +8,7 @@ use Livewire\Form;
 
 class CleaningStationForm extends Form
 {
-    #[Validate('required|exists:cleaningZone,id')]
+    #[Validate('required|exists:cleaning_zones,id')]
     public $cleaning_zone_id;
 
     #[Validate('required|string|max:255')]

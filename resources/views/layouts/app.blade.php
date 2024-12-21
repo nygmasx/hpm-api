@@ -43,7 +43,7 @@
             <x-mary-menu-item title="Utilisateurs" icon="o-users" link="/users"/>
             <x-mary-menu-item title="Fichiers" icon="s-inbox-arrow-down" link="/files"/>
             <x-mary-menu-item title="Plan de nettoyage" icon="s-sparkles" link="/cleaning-plans"/>
-            <x-mary-menu-item title="Zone de nettoyage" icon="o-view-columns" link="/cleaning-plans"/>
+            <x-mary-menu-item title="Zone de nettoyage" icon="o-view-columns" link="/cleaning-zones"/>
             <x-mary-menu-item title="Poste de nettoyage" icon="o-building-library" link="/cleaning-stations"/>
         </x-mary-menu>
     </x-slot:sidebar>
