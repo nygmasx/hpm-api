@@ -20,7 +20,7 @@
                 title="Utilisateurs"
                 color="text-black"
                 :value="$users"
-                icon="o-users"
+                icon="o-arrow-trending-up"
                 tooltip="Utilisateurs"
                 class="bg-white text-black h-50"
             />

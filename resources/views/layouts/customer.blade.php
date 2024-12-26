@@ -9,52 +9,21 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans text-gray-800 bg-gray-50 antialiased">
-<div class="min-h-screen flex flex-col">
-    <!-- Top Navigation Bar -->
-    <nav class="bg-white border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <!-- Logo -->
-                    <div class="shrink-0 flex items-center">
-                        <a href="/" class="text-xl font-bold text-indigo-600">
-                            {{ config('app.name', 'Laravel') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+<body class="font-sans text-gray-900 antialiased">
+<div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+    <div class="max-w-48">
+        <img src="{{ asset('image/hpm-black.png') }}" alt="">
+    </div>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col">
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        {{ $slot }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-100">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <div class="text-center text-sm text-gray-500">
-                © {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.
-            </div>
-        </div>
-    </footer>
+    <div class="w-full sm:max-w-md lg:max-w-7xl mt-6 px-6 py-4 shadow-md overflow-hidden sm:rounded-lg bg-white">
+        {{ $slot }}
+    </div>
 </div>
-
 @stack('scripts')
 </body>
 </html>
