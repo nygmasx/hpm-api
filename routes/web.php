@@ -49,7 +49,7 @@ Route::get('/cleaning-zone/new', \App\Livewire\CleaningZoneCreate::class)
     ->name('cleaning-zone.create');
 
 Route::view('profile', 'profile')
-    ->middleware(['auth'])
+    ->middleware(['auth', 'admin'])
     ->name('profile');
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
@@ -58,8 +58,10 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 
 Route::middleware(['auth', 'verified'])
     ->group(function () {
+        Route::view('profile', 'subscribe.profile')->name('subscribe.profile');
         Route::prefix('subscribe')
             ->as('subscribe.')
+            ->middleware('redirect.subscribed')
             ->group(function () {
                 Route::view('/', 'subscribe.index')->name('index');
                 Route::get('create', CreateController::class)->name('create');

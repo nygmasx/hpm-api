@@ -18,9 +18,9 @@ $login = function () {
 
     Session::regenerate();
 
-    $userRole = Auth::user()->role;
+    $user = Auth::user();
 
-    if ($userRole !== 'admin' && ) {
+    if ($user->role !== 'admin') {
         $this->redirectIntended(default: route('subscribe.index', absolute: false), navigate: true);
     } else {
         return redirect('/');
