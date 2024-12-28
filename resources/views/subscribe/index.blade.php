@@ -77,44 +77,7 @@
                         </a>
                     </div>
                 </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit">Déconnexion</button>
-                </form>
             </div>
         </section>
     </div>
-    @push('scripts')
-        <script src="https://js.stripe.com/v3/"></script>
-
-        <script>
-            const stripe = Stripe('{{config('stripe.stripe-key')}}');
-
-            const elements = stripe.elements();
-            const cardElement = elements.create('card');
-
-            cardElement.mount('#card-element');
-
-            const cardHolderName = document.getElementById('card-holder-name');
-            const cardButton = document.getElementById('card-button');
-            const clientSecret = cardButton.dataset.secret;
-
-            cardButton.addEventListener('click', async (e) => {
-                const {setupIntent, error} = await stripe.confirmCardSetup(
-                    clientSecret, {
-                        payment_method: {
-                            card: cardElement,
-                            billing_details: {name: cardHolderName.value}
-                        }
-                    }
-                );
-
-                if (error) {
-                    // Display "error.message" to the user...
-                } else {
-                    console.log(setupIntent.payment_method)
-                }
-            });
-        </script>
-    @endpush
 </x-customer-layout>

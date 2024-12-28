@@ -3,7 +3,7 @@
         <section class="bg-white py-8 antialiased md:py-16">
             <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
                 <div class="mx-auto max-w-5xl">
-                    <h2 class="text-xl font-semibold text-gray-900 sm:text-2xl">Payment</h2>
+                    <h2 class="text-xl font-semibold text-gray-900 sm:text-2xl">Paiement</h2>
 
                     <div class="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12">
                         <form id="payment-form" class="w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:max-w-xl lg:p-8">
@@ -11,46 +11,45 @@
                                 <!-- Name field -->
                                 <div>
                                     <label for="card-holder-name" class="mb-2 block text-sm font-medium text-gray-900">
-                                        Full name*
+                                        Nom*
                                     </label>
                                     <input type="text" id="card-holder-name" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500" required />
                                 </div>
 
                                 <!-- Address fields -->
                                 <div>
-                                    <label for="line1" class="mb-2 block text-sm font-medium text-gray-900">Address line 1*</label>
+                                    <label for="line1" class="mb-2 block text-sm font-medium text-gray-900">Addresse 1*</label>
                                     <input type="text" id="line1" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500" required />
                                 </div>
 
                                 <div>
-                                    <label for="line2" class="mb-2 block text-sm font-medium text-gray-900">Address line 2</label>
+                                    <label for="line2" class="mb-2 block text-sm font-medium text-gray-900">Addresse 2</label>
                                     <input type="text" id="line2" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500" />
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label for="city" class="mb-2 block text-sm font-medium text-gray-900">City*</label>
+                                        <label for="city" class="mb-2 block text-sm font-medium text-gray-900">Ville*</label>
                                         <input type="text" id="city" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500" required />
                                     </div>
 
                                     <div>
-                                        <label for="postal_code" class="mb-2 block text-sm font-medium text-gray-900">Postal code*</label>
+                                        <label for="postal_code" class="mb-2 block text-sm font-medium text-gray-900">Code postal*</label>
                                         <input type="text" id="postal_code" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500" required />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label for="country" class="mb-2 block text-sm font-medium text-gray-900">Country*</label>
+                                    <label for="country" class="mb-2 block text-sm font-medium text-gray-900">Pays*</label>
                                     <select id="country" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500" required>
                                         <option value="FR">France</option>
-                                        <!-- Add other countries as needed -->
                                     </select>
                                 </div>
 
                                 <!-- Card Element -->
                                 <div>
                                     <label for="card-element" class="mb-2 block text-sm font-medium text-gray-900">
-                                        Card details*
+                                        Informations bancaires*
                                     </label>
                                     <div id="card-element" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500"></div>
                                     <div id="card-errors" class="mt-2 text-sm text-red-600" role="alert"></div>
@@ -58,7 +57,7 @@
                             </div>
 
                             <button type="submit" id="card-button" data-secret="{{$intent->client_secret}}" class="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300">
-                                <span id="button-text">Pay now</span>
+                                <span id="button-text">Payer</span>
                                 <div id="spinner" class="hidden">
                                     <svg class="animate-spin h-5 w-5 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -70,31 +69,9 @@
 
                         <div class="mt-6 grow sm:mt-8 lg:mt-0">
                             <div class="space-y-4 rounded-lg border border-gray-100 bg-gray-50 p-6">
-                                <div class="space-y-2">
-                                    <dl class="flex items-center justify-between gap-4">
-                                        <dt class="text-base font-normal text-gray-500">Original price</dt>
-                                        <dd class="text-base font-medium text-gray-900">$6,592.00</dd>
-                                    </dl>
-
-                                    <dl class="flex items-center justify-between gap-4">
-                                        <dt class="text-base font-normal text-gray-500">Savings</dt>
-                                        <dd class="text-base font-medium text-green-500">-$299.00</dd>
-                                    </dl>
-
-                                    <dl class="flex items-center justify-between gap-4">
-                                        <dt class="text-base font-normal text-gray-500">Store Pickup</dt>
-                                        <dd class="text-base font-medium text-gray-900">$99</dd>
-                                    </dl>
-
-                                    <dl class="flex items-center justify-between gap-4">
-                                        <dt class="text-base font-normal text-gray-500">Tax</dt>
-                                        <dd class="text-base font-medium text-gray-900">$799</dd>
-                                    </dl>
-                                </div>
-
-                                <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2">
+                                <dl class="flex items-center justify-between gap-4 pt-2">
                                     <dt class="text-base font-bold text-gray-900">Total</dt>
-                                    <dd class="text-base font-bold text-gray-900">$7,191.00</dd>
+                                    <dd class="text-base font-bold text-gray-900">19,99€</dd>
                                 </dl>
                             </div>
 
@@ -200,7 +177,7 @@
 
                             cardButton.disabled = false;
                             spinner.classList.add('hidden');
-                            buttonText.textContent = 'Pay now';
+                            buttonText.textContent = 'Payer maintenant';
                         }
                     }
                 } catch (err) {
@@ -210,7 +187,7 @@
 
                     cardButton.disabled = false;
                     spinner.classList.add('hidden');
-                    buttonText.textContent = 'Pay now';
+                    buttonText.textContent = 'Payer mau';
                 }
             });
 
