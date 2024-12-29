@@ -14,16 +14,16 @@ form(LoginForm::class);
 $login = function () {
     $this->validate();
 
-    $this->form->authenticate();
+    if ($this->form->authenticate()) {
+        session()->regenerate();
 
-    Session::regenerate();
+        $user = Auth::user();
 
-    $user = Auth::user();
-
-    if ($user->role !== 'admin') {
-        $this->redirectIntended(default: route('subscribe.index', absolute: false), navigate: true);
-    } else {
-        return redirect('/');
+        if ($user->role !== 'admin') {
+            return redirect()->intended(route('subscribe.index'));
+        } else {
+            return redirect('/');
+        }
     }
 };
 
