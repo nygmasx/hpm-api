@@ -5,7 +5,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-Route::domain('customer.' . env('APP_DOMAIN', 'hpm-api.test'))->middleware('guest')->group(function () {
+Route::domain('customer.' . config('app.url'))->middleware('guest')->group(function () {
     Volt::route('register', 'pages.customer.register')
         ->name('customer.register');
 
