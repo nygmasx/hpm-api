@@ -37,7 +37,7 @@ class SubscriptionConfirmation extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.subscription-confirmation',
+            markdown: 'emails.subscription-confirmation',
         );
     }
 
