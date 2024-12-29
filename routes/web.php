@@ -56,16 +56,19 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
-Route::middleware(['auth', 'verified'])
-    ->group(function () {
-        Route::view('profile', 'subscribe.profile')->name('subscribe.profile');
-        Route::prefix('subscribe')
-            ->as('subscribe.')
-            ->middleware('redirect.subscribed')
-            ->group(function () {
-                Route::view('/', 'subscribe.index')->name('index');
-                Route::get('create', CreateController::class)->name('create');
-                Route::post('store', StoreController::class)->name('store');
-            });
-    });
+Route::domain('customer.'.config('app.url'))->group(function () {
+    Route::middleware(['auth', 'verified'])
+        ->group(function () {
+            Route::view('profile', 'subscribe.profile')->name('subscribe.profile');
+            Route::prefix('subscribe')
+                ->as('subscribe.')
+                ->middleware('redirect.subscribed')
+                ->group(function () {
+                    Route::view('/', 'subscribe.index')->name('index');
+                    Route::get('create', CreateController::class)->name('create');
+                    Route::post('store', StoreController::class)->name('store');
+                });
+        });
+});
+
 require __DIR__ . '/auth.php';

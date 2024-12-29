@@ -5,15 +5,17 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
+Route::domain('customer.' . env('APP_DOMAIN', 'hpm-api.test'))->middleware('guest')->group(function () {
+    Volt::route('register', 'pages.customer.register')
+        ->name('customer.register');
+
+    Volt::route('login', 'pages.customer.login')
+        ->name('customer.login');
+});
+
 Route::middleware('guest')->group(function () {
     Volt::route('register', 'pages.auth.register')
         ->name('register');
-
-    Volt::route('customer/register', 'pages.customer.register')
-        ->name('customer.register');
-
-    Volt::route('customer/login', 'pages.customer.login')
-        ->name('customer.login');
 
     Volt::route('login', 'pages.auth.login')
         ->name('login');

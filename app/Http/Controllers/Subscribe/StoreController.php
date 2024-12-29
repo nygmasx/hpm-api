@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Subscribe;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SubscriptionConfirmation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class StoreController extends Controller
 {
@@ -22,9 +24,13 @@ class StoreController extends Controller
         ]);
 
         try {
-            $subscription = auth()->user()->newSubscription(
+            $user = auth()->user();
+
+            $subscription = $user->newSubscription(
                 'default', 'price_1QSh6JKQ5LcUAF7SvJIzdIh6'
             )->create($validated['paymentMethod']);
+
+            Mail::to($user->email)->send(new SubscriptionConfirmation($user));
 
             return response()->json([
                 'success' => true,
