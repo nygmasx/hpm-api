@@ -61,6 +61,7 @@ Route::post('/login', function (Request $request) {
 
 Route::post('/register', function (Request $request) {
     $request->validate([
+        'name' => 'required',
         'email' => 'required|email|unique:users',
         'password' => 'required|min:6',
         'device_name' => 'required',
