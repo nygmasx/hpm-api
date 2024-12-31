@@ -59,6 +59,26 @@ Route::post('/login', function (Request $request) {
     ], 201);
 });
 
+Route::post('/register', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:6',
+        'device_name' => 'required',
+    ]);
+
+    $user = User::create([
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    $token = $user->createToken($request->device_name)->plainTextToken;
+
+    return response()->json([
+        'token' => $token,
+        'user' => $user->only('id', 'email'),
+    ], 201);
+});
+
 Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
     $request->user()->currentAccessToken()->delete();
 
