@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\SubscriptionConfirmation;
 use App\Models\AdvancedTracability;
 use App\Models\CleaningPlan;
 use App\Models\CleaningStation;
@@ -19,6 +20,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -74,6 +76,8 @@ Route::post('/register', function (Request $request) {
     ]);
 
     $token = $user->createToken($request->device_name)->plainTextToken;
+
+    Mail::to($user->email)->send(new SubscriptionConfirmation($user));
 
     return response()->json([
         'token' => $token,
