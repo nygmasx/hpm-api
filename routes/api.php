@@ -69,11 +69,37 @@ Route::post('/register', function (Request $request) {
         'device_name' => 'required',
     ]);
 
+    // Create user
     $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
     ]);
+
+    // Get all cleaning zones and tasks
+    $cleaningZones = CleaningZone::all();
+    $cleaningTasks = CleaningTask::all();
+
+    // Attach all zones to user
+    $cleaningZones->each(function ($zone) use ($user) {
+        DB::table('users_cleaning_zones')->insert([
+            'user_id' => $user->id,
+            'cleaning_zone_id' => $zone->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    });
+
+    // Attach all tasks to user
+    $cleaningTasks->each(function ($task) use ($user) {
+        DB::table('users_cleaning_tasks')->insert([
+            'user_id' => $user->id,
+            'cleaning_task_id' => $task->id,
+            'is_completed' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    });
 
     $token = $user->createToken($request->device_name)->plainTextToken;
 
