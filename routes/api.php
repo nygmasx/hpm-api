@@ -91,6 +91,21 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
     return response()->json("Logged out", 200);
 });
 
+Route::middleware('auth:sanctum')->delete('/user/delete', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email'
+    ]);
+
+    if ($request->user()->email !== $request->email) {
+        return response()->json(['message' => ["L'email ne correspond pas."],]);
+    }
+
+    $request->user()->currentAccessToken()->delete();
+    $request->user()->delete();
+
+    return response()->json("Account deleted", 200);
+});
+
 Route::middleware('auth:sanctum')->post('/simple-tracking', function (Request $request) {
     $request->validate([
         'opened_at' => 'required|date',
