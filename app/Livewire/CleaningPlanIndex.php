@@ -46,7 +46,7 @@ class CleaningPlanIndex extends Component
             ['key' => 'id', 'label' => '#', 'class' => 'text-lg text-center'],
             ['key' => 'title', 'label' => 'Titre', 'class' => 'text-lg text-center'],
             ['key' => 'estimated_time', 'label' => 'Temps estimé (minutes)', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
-                return '<x-mary-badge class="bg-white text-emerald-700 font-bold border-none" value="' . $cleaningTask->estimated_time . ' min" />';
+                return $cleaningTask->estimated_time . ' min';
             }],
             ['key' => 'products', 'label' => 'Produit(s)', 'class' => 'text-lg text-center'],
             ['key' => 'products_quantity', 'label' => 'Quantité de produit(s)', 'class' => 'text-lg text-center'],
