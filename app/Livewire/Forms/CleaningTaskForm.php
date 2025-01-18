@@ -15,7 +15,7 @@ class CleaningTaskForm extends Form
     #[Validate('required|string|max:255')]
     public $title = '';
 
-    #[Validate('required|date_format:H:i')]
+    #[Validate('required|string')]
     public $estimated_time = '';
 
     #[Validate('required|string')]
@@ -30,7 +30,7 @@ class CleaningTaskForm extends Form
     #[Validate('nullable|string')]
     public $temperature = '';
 
-    #[Validate('nullable|date_format:H:i')]
+    #[Validate('nullable|string')]
     public $action_time = '';
 
     #[Validate('nullable|string')]
@@ -50,12 +50,12 @@ class CleaningTaskForm extends Form
         return [
             'cleaning_station_id' => ['required', 'exists:cleaning_stations,id'],
             'title' => ['required', 'string', 'max:255'],
-            'estimated_time' => ['required', 'date_format:H:i'],
+            'estimated_time' => ['required', 'string'],
             'products' => ['required', 'string'],
             'products_quantity' => ['nullable', 'string'],
             'verification_type' => ['required', 'string'],
             'temperature' => ['nullable', 'string'],
-            'action_time' => ['nullable', 'date_format:H:i'],
+            'action_time' => ['nullable', 'string'],
             'utensil' => ['nullable', 'string'],
             'rinse_type' => ['nullable', 'string'],
             'drying_type' => ['nullable', 'string'],

@@ -27,14 +27,14 @@
                 />
                 <x-mary-input label="Titre" wire:model="form.title" class="bg-emerald-700 text-white"/>
                 <x-mary-input label="Fréquence" wire:model="form.frequency" class="bg-emerald-700 text-white"/>
-                <x-mary-input type="time" label="Temps estimé (minute)" wire:model="form.estimated_time" class="bg-emerald-700 text-white"/>
+                <x-mary-input label="Temps estimé (minutes)" wire:model="form.estimated_time" class="bg-emerald-700 text-white"/>
                 <x-mary-input label="Produit(s)" wire:model="form.products" class="bg-emerald-700 text-white"/>
                 <x-mary-input label="Quantité de produit(s)" wire:model="form.products_quantity" class="bg-emerald-700 text-white"/>
             </div>
             <div class="w-1/2 space-y-4">
                 <x-mary-input label="Type de vérification" wire:model="form.verification_type" class="bg-emerald-700 text-white"/>
                 <x-mary-input label="Température" wire:model="form.temperature" class="bg-emerald-700 text-white"/>
-                <x-mary-input type="time" label="Temps d'action" wire:model="form.action_time" class="bg-emerald-700 text-white"/>
+                <x-mary-input label="Temps d'action (minutes)" wire:model="form.action_time" class="bg-emerald-700 text-white"/>
                 <x-mary-input label="Ustensile(s)" wire:model="form.utensil" class="bg-emerald-700 text-white"/>
                 <x-mary-input label="Type de rinçage" wire:model="form.rinse_type" class="bg-emerald-700 text-white"/>
                 <x-mary-input label="Type de séchage" wire:model="form.drying_type" class="bg-emerald-700 text-white"/>

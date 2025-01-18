@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cleaning_station_id')->constrained('cleaning_stations')->cascadeOnDelete();
             $table->string('title');
-            $table->time('estimated_time');
+            $table->string('estimated_time');
             $table->string('products');
             $table->string('products_quantity')->nullable();
             $table->string('verification_type');
             $table->string('temperature')->nullable();
-            $table->time('action_time')->nullable();
+            $table->string('action_time')->nullable();
             $table->string('utensil')->nullable();
             $table->string('rinse_type')->nullable();
             $table->string('drying_type')->nullable();
