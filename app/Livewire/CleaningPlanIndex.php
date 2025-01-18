@@ -47,8 +47,16 @@ class CleaningPlanIndex extends Component
             ['key' => 'title', 'label' => 'Titre', 'class' => 'text-lg'],
             ['key' => 'estimated_time', 'label' => 'Temps estimé (minutes)', 'class' => 'text-lg'],
             ['key' => 'products', 'label' => 'Produit(s)', 'class' => 'text-lg'],
+            ['key' => 'products_quantity', 'label' => 'Quantité de produit(s)', 'class' => 'text-lg'],
             ['key' => 'verification_type', 'label' => 'Type de vérification', 'class' => 'text-lg'],
+            ['key' => 'temperature', 'label' => 'Température', 'class' => 'text-lg'],
+            ['key' => 'action_time', 'label' => 'Temps d\'action', 'class' => 'text-lg'],
+            ['key' => 'utensil', 'label' => 'Ustensile', 'class' => 'text-lg'],
+            ['key' => 'rinse_type', 'label' => 'Type de rinçage', 'class' => 'text-lg'],
+            ['key' => 'drying_type', 'label' => 'Type de séchage', 'class' => 'text-lg'],
             ['key' => 'frequency', 'label' => 'Fréquence', 'class' => 'text-lg'],
+            ['key' => 'cleaning_station_id', 'label' => 'Station de nettoyage', 'class' => 'text-lg'],
+            ['key' => 'created_at', 'label' => 'Créé le', 'class' => 'text-lg'],
         ];
 
         return view('livewire.cleaning-plan-index',
