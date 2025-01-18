@@ -24,6 +24,7 @@ class CleaningPlanIndex extends Component
             ->orWhereHas('users', function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         $lastCleaningTasks = CleaningTask::join('users_cleaning_tasks', 'cleaning_tasks.id', '=', 'users_cleaning_tasks.cleaning_task_id')
