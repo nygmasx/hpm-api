@@ -43,20 +43,34 @@ class CleaningPlanIndex extends Component
             ->get();
 
         $headers = [
-            ['key' => 'id', 'label' => '#', 'class' => 'text-lg'],
-            ['key' => 'title', 'label' => 'Titre', 'class' => 'text-lg'],
-            ['key' => 'estimated_time', 'label' => 'Temps estimé (minutes)', 'class' => 'text-lg'],
-            ['key' => 'products', 'label' => 'Produit(s)', 'class' => 'text-lg'],
-            ['key' => 'products_quantity', 'label' => 'Quantité de produit(s)', 'class' => 'text-lg'],
-            ['key' => 'verification_type', 'label' => 'Type de vérification', 'class' => 'text-lg'],
-            ['key' => 'temperature', 'label' => 'Température', 'class' => 'text-lg'],
-            ['key' => 'action_time', 'label' => 'Temps d\'action', 'class' => 'text-lg'],
-            ['key' => 'utensil', 'label' => 'Ustensile', 'class' => 'text-lg'],
-            ['key' => 'rinse_type', 'label' => 'Type de rinçage', 'class' => 'text-lg'],
-            ['key' => 'drying_type', 'label' => 'Type de séchage', 'class' => 'text-lg'],
-            ['key' => 'frequency', 'label' => 'Fréquence', 'class' => 'text-lg'],
-            ['key' => 'cleaning_station_id', 'label' => 'Station de nettoyage', 'class' => 'text-lg'],
-            ['key' => 'created_at', 'label' => 'Créé le', 'class' => 'text-lg'],
+            ['key' => 'id', 'label' => '#', 'class' => 'text-lg text-center'],
+            ['key' => 'title', 'label' => 'Titre', 'class' => 'text-lg text-center'],
+            ['key' => 'estimated_time', 'label' => 'Temps estimé (minutes)', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return '<x-mary-badge class="bg-white text-emerald-700 font-bold border-none" value="' . $cleaningTask->estimated_time . ' min" />';
+            }],
+            ['key' => 'products', 'label' => 'Produit(s)', 'class' => 'text-lg text-center'],
+            ['key' => 'products_quantity', 'label' => 'Quantité de produit(s)', 'class' => 'text-lg text-center'],
+            ['key' => 'verification_type', 'label' => 'Type de vérification', 'class' => 'text-lg text-center'],
+            ['key' => 'temperature', 'label' => 'Température', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->temperature ? $cleaningTask->temperature . '°C' : '-';
+            }],
+            ['key' => 'action_time', 'label' => 'Temps d\'action', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->action_time ? $cleaningTask->action_time . ' min' : '-';
+            }],
+            ['key' => 'utensil', 'label' => 'Ustensile', 'class' => 'text-lg text-center'],
+            ['key' => 'rinse_type', 'label' => 'Type de rinçage', 'class' => 'text-lg text-center'],
+            ['key' => 'drying_type', 'label' => 'Type de séchage', 'class' => 'text-lg text-center'],
+            ['key' => 'frequency', 'label' => 'Fréquence', 'class' => 'text-lg text-center'],
+            ['key' => 'cleaning_station_id', 'label' => 'Station de nettoyage', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->cleaningStation->name;
+            }],
+            ['key' => 'created_at', 'label' => 'Créé le', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->created_at->format('d/m/Y H:i');
+            }],
+            ['key' => 'updated_at', 'label' => 'Mis à jour le', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->updated_at->format('d/m/Y H:i');
+            }],
+            ['key' => 'actions', 'label' => 'Actions', 'class' => 'text-lg text-center'],
         ];
 
         return view('livewire.cleaning-plan-index',
