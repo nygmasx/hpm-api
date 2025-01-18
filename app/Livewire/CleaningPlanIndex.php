@@ -43,32 +43,50 @@ class CleaningPlanIndex extends Component
             ->get();
 
         $headers = [
-            ['key' => 'id', 'label' => '#', 'class' => 'text-lg text-center'],
-            ['key' => 'title', 'label' => 'Titre', 'class' => 'text-lg text-center'],
-            ['key' => 'estimated_time', 'label' => 'Temps estimé (minutes)', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
-                return $cleaningTask->estimated_time . ' min';
+            ['key' => 'id', 'label' => '#', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->id ?: '-';
             }],
-            ['key' => 'products', 'label' => 'Produit(s)', 'class' => 'text-lg text-center'],
-            ['key' => 'products_quantity', 'label' => 'Quantité de produit(s)', 'class' => 'text-lg text-center'],
-            ['key' => 'verification_type', 'label' => 'Type de vérification', 'class' => 'text-lg text-center'],
+            ['key' => 'title', 'label' => 'Titre', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->title ?: '-';
+            }],
+            ['key' => 'estimated_time', 'label' => 'Temps estimé (minutes)', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->estimated_time ? $cleaningTask->estimated_time . ' min' : '-';
+            }],
+            ['key' => 'products', 'label' => 'Produit(s)', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->products ?: '-';
+            }],
+            ['key' => 'products_quantity', 'label' => 'Quantité de produit(s)', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->products_quantity ?: '-';
+            }],
+            ['key' => 'verification_type', 'label' => 'Type de vérification', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->verification_type ?: '-';
+            }],
             ['key' => 'temperature', 'label' => 'Température', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
                 return $cleaningTask->temperature ? $cleaningTask->temperature . '°C' : '-';
             }],
             ['key' => 'action_time', 'label' => 'Temps d\'action', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
                 return $cleaningTask->action_time ? $cleaningTask->action_time . ' min' : '-';
             }],
-            ['key' => 'utensil', 'label' => 'Ustensile', 'class' => 'text-lg text-center'],
-            ['key' => 'rinse_type', 'label' => 'Type de rinçage', 'class' => 'text-lg text-center'],
-            ['key' => 'drying_type', 'label' => 'Type de séchage', 'class' => 'text-lg text-center'],
-            ['key' => 'frequency', 'label' => 'Fréquence', 'class' => 'text-lg text-center'],
+            ['key' => 'utensil', 'label' => 'Ustensile', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->utensil ?: '-';
+            }],
+            ['key' => 'rinse_type', 'label' => 'Type de rinçage', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->rinse_type ?: '-';
+            }],
+            ['key' => 'drying_type', 'label' => 'Type de séchage', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->drying_type ?: '-';
+            }],
+            ['key' => 'frequency', 'label' => 'Fréquence', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
+                return $cleaningTask->frequency ?: '-';
+            }],
             ['key' => 'cleaning_station_id', 'label' => 'Station de nettoyage', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
-                return $cleaningTask->cleaningStation->name;
+                return $cleaningTask->cleaningStation->name ?? '-';
             }],
             ['key' => 'created_at', 'label' => 'Créé le', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
-                return $cleaningTask->created_at->format('d/m/Y H:i');
+                return $cleaningTask->created_at ? $cleaningTask->created_at->format('d/m/Y H:i') : '-';
             }],
             ['key' => 'updated_at', 'label' => 'Mis à jour le', 'class' => 'text-lg text-center', 'format' => function($cleaningTask) {
-                return $cleaningTask->updated_at->format('d/m/Y H:i');
+                return $cleaningTask->updated_at ? $cleaningTask->updated_at->format('d/m/Y H:i') : '-';
             }],
             ['key' => 'actions', 'label' => 'Actions', 'class' => 'text-lg text-center'],
         ];
