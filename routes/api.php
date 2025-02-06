@@ -575,6 +575,7 @@ Route::get('user/{user}/oil-controls', function (User $user) {
 Route::middleware('auth:sanctum')->post('/reception/new', function (Request $request) {
     $request->validate([
         'reference' => 'required|string',
+        'reference_picture' => 'required|image|mimes:jpg,jpeg,png',
         'date' => 'required|date',
         'supplier_id' => 'required|exists:suppliers,id',
         'service' => 'required|string',
@@ -590,6 +591,7 @@ Route::middleware('auth:sanctum')->post('/reception/new', function (Request $req
         $reception = Reception::create([
             'user_id' => auth()->id(),
             'reference' => $request->reference,
+            'reference_picture' => $request->reference_picture,
             'date' => $request->date,
             'supplier_id' => $request->supplier_id,
             'service' => $request->service,
@@ -666,6 +668,7 @@ Route::get('user/{user}/files', function (User $user) {
 Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) {
     $request->validate([
         'operation_type' => 'required|string',
+        'storage_location' => 'required|string',
         'additional_informations' => 'nullable|string',
         'products' => 'required|array',
         'products.*.product_id' => 'required|exists:products,id',
@@ -673,7 +676,7 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
         'start_temperature' => 'required|string',
         'end_date' => 'nullable|date',
         'end_temperature' => 'nullable|string',
-        'is_finished' => 'required|in:0,1',  // Changed to accept string '0' or '1'
+        'is_finished' => 'required|in:0,1',
         'corrective_action' => 'nullable|string',
     ]);
 
@@ -681,6 +684,7 @@ Route::middleware('auth:sanctum')->post('/tcp/new', function (Request $request) 
         $temperatureChangement = TemperatureChangement::create([
             'user_id' => auth()->id(),
             'operation_type' => $request->operation_type,
+            'storage_location' => $request->storage_location,
             'additional_informations' => $request->additional_informations,
             'start_date' => $request->start_date,
             'start_temperature' => $request->start_temperature,
