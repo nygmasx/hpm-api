@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('receptions', function (Blueprint $table) {
             $table->id();
-            $table->string('reference');
+            $table->string('reference')->nullable();
+            $table->string('reference_picture')->nullable();
             $table->dateTime('date');
             $table->foreignId('supplier_id')->constrained('suppliers');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();

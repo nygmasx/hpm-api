@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('operation_type');
             $table->text('additional_informations')->nullable();
+            $table->string('storage_location');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->dateTime('start_date');
             $table->string('start_temperature');
