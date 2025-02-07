@@ -605,6 +605,12 @@ Route::middleware('auth:sanctum')->post('/reception/new', function (Request $req
             $reception->save();
         }
 
+        if ($request->hasFile('reference_picture')) {
+            $path = $request->file('reference_picture')->store('reference_pictures', 'public');
+            $reception->reference_picture = $path;
+            $reception->save();
+        }
+
         // Handle products
         foreach ($request->products as $productData) {
             $product = Product::findOrFail($productData['product_id']);
