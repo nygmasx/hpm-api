@@ -13,6 +13,7 @@ class Reception extends Model
 
     protected $fillable = [
         "reference",
+        "reference_picture",
         "date",
         "supplier_id",
         "user_id",

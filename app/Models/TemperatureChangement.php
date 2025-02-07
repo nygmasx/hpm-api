@@ -14,6 +14,7 @@ class TemperatureChangement extends Model
     protected $fillable = [
         'operation_type',
         'additional_informations',
+        'storage_location',
         'user_id',
         'start_date',
         'start_temperature',
