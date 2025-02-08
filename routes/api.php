@@ -574,8 +574,8 @@ Route::get('user/{user}/oil-controls', function (User $user) {
 
 Route::middleware('auth:sanctum')->post('/reception/new', function (Request $request) {
     $request->validate([
-        'reference' => 'required|string',
-        'reference_picture' => 'required|image|mimes:jpg,jpeg,png',
+        'reference' => 'nullable|string',
+        'reference_picture' => 'nullable|image|mimes:jpg,jpeg,png',
         'date' => 'required|date',
         'supplier_id' => 'required|exists:suppliers,id',
         'service' => 'required|string',
